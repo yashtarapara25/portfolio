@@ -30,7 +30,7 @@ export default function Contact() {
 
 
 
-  const contactItems = [
+  const contactItems = settingsLoading ? [] : [
     settings.email && {
       href: `mailto:${settings.email}`,
       icon: Mail,
@@ -62,6 +62,7 @@ export default function Contact() {
       bg: "bg-cyan-500/5 hover:bg-cyan-500/10",
     },
   ].filter(Boolean) as NonNullable<ReturnType<typeof contactItems.find>>[];
+
 
   const inputClass = (field: string) =>
     `w-full px-4 py-3.5 rounded-xl bg-slate-800/50 border text-foreground text-sm placeholder:text-muted-foreground/60 focus:outline-none transition-all duration-300 font-space ${focusedField === field
