@@ -117,45 +117,47 @@ export default function Contact() {
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 gap-12">
-            {/* Contact info cards */}
-            <motion.div variants={fadeUp} className="space-y-4">
-              <h3 className="text-base font-bold text-cyan-300 mb-5 font-rajdhani tracking-widest uppercase">
-                Quick Links
-              </h3>
+          <div className={`grid gap-12 ${contactItems.length > 0 ? "md:grid-cols-2" : ""}`}>
+            {/* Contact info cards — only shown when settings are configured */}
+            {contactItems.length > 0 && (
+              <motion.div variants={fadeUp} className="space-y-4">
+                <h3 className="text-base font-bold text-cyan-300 mb-5 font-rajdhani tracking-widest uppercase">
+                  Quick Links
+                </h3>
 
-              {contactItems.map(({ href, icon: Icon, label, value, gradient, shadow, border, bg }, i) => {
-                const Tag = href ? motion.a : motion.div;
-                return (
-                  <Tag
-                    key={label}
-                    {...(href ? { href } : {})}
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.1 }}
-                    whileHover={{ x: 10, scale: 1.02 }}
-                    className={`flex items-start gap-4 p-4 rounded-xl border transition-all cursor-pointer group ${border} ${bg}`}
-                  >
-                    <motion.div
-                      className={`flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center shadow-lg ${shadow}`}
-                      whileHover={{ rotate: 360, scale: 1.1 }}
-                      transition={{ duration: 0.6 }}
+                {contactItems.map(({ href, icon: Icon, label, value, gradient, shadow, border, bg }, i) => {
+                  const Tag = href ? motion.a : motion.div;
+                  return (
+                    <Tag
+                      key={label}
+                      {...(href ? { href } : {})}
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: i * 0.1 }}
+                      whileHover={{ x: 10, scale: 1.02 }}
+                      className={`flex items-start gap-4 p-4 rounded-xl border transition-all cursor-pointer group ${border} ${bg}`}
                     >
-                      <Icon size={20} className="text-white" />
-                    </motion.div>
-                    <div>
-                      <p className="text-xs text-muted-foreground font-bold mb-1 font-display tracking-widest">
-                        {label}
-                      </p>
-                      <p className="text-sm font-space text-cyan-300 group-hover:text-cyan-200 transition-colors">
-                        {value}
-                      </p>
-                    </div>
-                  </Tag>
-                );
-              })}
-            </motion.div>
+                      <motion.div
+                        className={`flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center shadow-lg ${shadow}`}
+                        whileHover={{ rotate: 360, scale: 1.1 }}
+                        transition={{ duration: 0.6 }}
+                      >
+                        <Icon size={20} className="text-white" />
+                      </motion.div>
+                      <div>
+                        <p className="text-xs text-muted-foreground font-bold mb-1 font-display tracking-widest">
+                          {label}
+                        </p>
+                        <p className="text-sm font-space text-cyan-300 group-hover:text-cyan-200 transition-colors">
+                          {value}
+                        </p>
+                      </div>
+                    </Tag>
+                  );
+                })}
+              </motion.div>
+            )}
 
             {/* Contact form */}
             <motion.form
