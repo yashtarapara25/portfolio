@@ -6,12 +6,12 @@ import SkillsViz from "@/components/SkillsViz";
 import Timeline from "@/components/Timeline";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
-import CustomCursor from "@/components/CustomCursor";
+
 
 const Index = () => {
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <CustomCursor />
+
       <Header />
       <main>
         <Hero />
