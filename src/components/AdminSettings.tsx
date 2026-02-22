@@ -23,6 +23,7 @@ export default function AdminSettings() {
     github_url: "",
     linkedin_url: "",
     twitter_url: "",
+    resume_url: "",
   };
 
   useEffect(() => {
@@ -124,11 +125,10 @@ export default function AdminSettings() {
         <div className="bg-gray-800 rounded-lg border border-gray-700 p-6">
           {message && (
             <div
-              className={`mb-4 p-4 rounded ${
-                message.includes("successfully")
+              className={`mb-4 p-4 rounded ${message.includes("successfully")
                   ? "bg-green-500/10 border border-green-500/50 text-green-400"
                   : "bg-red-500/10 border border-red-500/50 text-red-400"
-              }`}
+                }`}
             >
               {message}
             </div>
@@ -249,6 +249,31 @@ export default function AdminSettings() {
                     className="bg-gray-700 border-gray-600"
                     placeholder="https://twitter.com/yourname"
                   />
+                </div>
+              </div>
+            </div>
+
+            {/* Resume */}
+            <div>
+              <h2 className="text-xl font-bold text-white mb-4">
+                Resume
+              </h2>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Resume URL
+                  </label>
+                  <Input
+                    value={settings.resume_url || ""}
+                    onChange={(e) =>
+                      handleChange("resume_url", e.target.value)
+                    }
+                    className="bg-gray-700 border-gray-600"
+                    placeholder="https://drive.google.com/uc?export=download&id=..."
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Upload your PDF to Google Drive → Share → Copy link → paste the direct download URL here.
+                  </p>
                 </div>
               </div>
             </div>

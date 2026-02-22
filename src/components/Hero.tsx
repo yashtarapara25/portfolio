@@ -1,11 +1,12 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { fadeUp, staggerContainer } from "@/lib/motions";
 import { about } from "@/lib/data";
-import { ArrowDown, Github, Linkedin, Twitter, Sparkles } from "lucide-react";
+import { ArrowDown, Github, Linkedin, Twitter, Sparkles, Download } from "lucide-react";
 import heroBg from "@/assets/hero-bg.jpg";
 import profileImg from "@/assets/profile.jpeg";
 import AnimatedBackground from "./AnimatedBackground";
 import { useState, useEffect } from "react";
+import { useSiteSettings } from "@/hooks/use-portfolio-data";
 
 // ─── Orbiting Code-Icon data ────────────────────────────────────────────
 const CODE_ICONS = [
@@ -72,6 +73,46 @@ function OrbitIcon({
         </span>
       </motion.div>
     </motion.div>
+  );
+}
+
+// ─── Resume Download Button ─────────────────────────────────────────────────
+function ResumeButton() {
+  const { settings } = useSiteSettings();
+  const resumeUrl = settings.resume_url;
+
+  if (!resumeUrl) {
+    return (
+      <motion.span
+        whileHover={{ scale: 1.02 }}
+        className="inline-flex items-center gap-2 px-8 py-4 rounded-lg border-2 border-slate-600/40 text-slate-500 font-semibold text-sm font-space cursor-not-allowed select-none"
+      >
+        <Download size={16} />
+        Resume Coming Soon
+      </motion.span>
+    );
+  }
+
+  return (
+    <motion.a
+      href={resumeUrl}
+      download
+      target="_blank"
+      rel="noopener noreferrer"
+      whileHover={{ scale: 1.05, borderColor: "rgb(34,211,238)", boxShadow: "0 0 24px rgba(34,211,238,0.35)" }}
+      whileTap={{ scale: 0.97 }}
+      className="inline-flex items-center gap-2 px-8 py-4 rounded-lg border-2 border-cyan-500/40 text-foreground font-semibold hover:bg-cyan-500/8 transition-all text-sm font-space relative overflow-hidden group"
+    >
+      <motion.span
+        animate={{ y: [0, 3, 0] }}
+        transition={{ repeat: Infinity, duration: 1.8 }}
+      >
+        <Download size={16} className="text-cyan-400" />
+      </motion.span>
+      Download Resume
+      {/* shimmer */}
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-400/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+    </motion.a>
   );
 }
 
@@ -216,14 +257,7 @@ export default function Hero() {
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity" />
               </motion.a>
 
-              <motion.a
-                href="#contact"
-                whileHover={{ scale: 1.05, borderColor: "rgb(34,197,221)", boxShadow: "0 0 20px rgba(34,197,221,0.4)" }}
-                whileTap={{ scale: 0.98 }}
-                className="inline-flex items-center gap-2 px-8 py-4 rounded-lg border-2 border-cyan-500/30 text-foreground font-semibold hover:bg-cyan-500/5 transition-all text-sm font-space"
-              >
-                Get in Touch
-              </motion.a>
+              <ResumeButton />
             </motion.div>
 
             {/* Social Links */}
