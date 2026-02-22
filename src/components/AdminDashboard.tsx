@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useAdmin } from "@/hooks/use-admin";
-import { LogOut, Users, BookOpen, GraduationCap, Settings } from "lucide-react";
+import { LogOut, Users, BookOpen, GraduationCap, Settings, Mail } from "lucide-react";
 
 export default function AdminDashboard() {
   const { user, isAdmin, loading } = useAdmin();
@@ -53,6 +53,12 @@ export default function AdminDashboard() {
       title: "Settings",
       description: "Site configuration",
       onClick: () => navigate("/admin/settings"),
+    },
+    {
+      icon: Mail,
+      title: "Messages",
+      description: "View contact form submissions",
+      onClick: () => navigate("/admin/messages"),
     },
   ];
 

@@ -3,19 +3,32 @@ import { motion } from "framer-motion";
 import { staggerContainer, fadeUp } from "@/lib/motions";
 import { useSiteSettings } from "@/hooks/use-portfolio-data";
 import { Send, Mail, Phone, MapPin, MessageCircle, Sparkles } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function Contact() {
   const { settings, loading: settingsLoading } = useSiteSettings();
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [sent, setSent] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [focusedField, setFocusedField] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitting(true);
+    setError(null);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { error: err } = await (supabase as any).from("contact_messages").insert([
+      { name: form.name, email: form.email, message: form.message, read: false },
+    ]);
+    setSubmitting(false);
+    if (err) { setError("Failed to send. Please try again."); return; }
     setSent(true);
-    setTimeout(() => setSent(false), 4000);
     setForm({ name: "", email: "", message: "" });
+    setTimeout(() => setSent(false), 4000);
   };
+
+
 
   const contactItems = [
     settings.email && {
