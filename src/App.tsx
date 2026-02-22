@@ -12,6 +12,7 @@ import AdminSkills from "./components/AdminSkills";
 import AdminEducation from "./components/AdminEducation";
 import AdminSettings from "./components/AdminSettings";
 import ProtectedRoute from "./components/ProtectedRoute";
+import CustomCursor from "./components/CustomCursor";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +22,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <CustomCursor />
         <Routes>
           <Route path="/" element={<Index />} />
           {/* Public admin login — no guard */}
