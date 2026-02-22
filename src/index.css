@@ -1,0 +1,571 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Rajdhani:wght@300;400;500;600;700&family=Oxanium:wght@200;300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Hide default OS cursor — custom cursor handles it */
+*,
+*::before,
+*::after {
+  cursor: none !important;
+}
+
+@layer base {
+  :root {
+    --background: 220 20% 4%;
+    --foreground: 210 20% 92%;
+
+    --card: 220 18% 8%;
+    --card-foreground: 210 20% 92%;
+
+    --popover: 220 18% 8%;
+    --popover-foreground: 210 20% 92%;
+
+    --primary: 174 72% 56%;
+    --primary-foreground: 220 20% 4%;
+
+    --secondary: 220 16% 14%;
+    --secondary-foreground: 210 20% 85%;
+
+    --muted: 220 14% 12%;
+    --muted-foreground: 215 12% 50%;
+
+    --accent: 174 72% 56%;
+    --accent-foreground: 220 20% 4%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 220 14% 16%;
+    --input: 220 14% 16%;
+    --ring: 174 72% 56%;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 220 18% 6%;
+    --sidebar-foreground: 210 20% 85%;
+    --sidebar-primary: 174 72% 56%;
+    --sidebar-primary-foreground: 220 20% 4%;
+    --sidebar-accent: 220 14% 12%;
+    --sidebar-accent-foreground: 210 20% 85%;
+    --sidebar-border: 220 14% 16%;
+    --sidebar-ring: 174 72% 56%;
+
+    /* Custom tokens */
+    --glow: 174 72% 56%;
+    --glow-muted: 174 40% 30%;
+    --surface: 220 16% 10%;
+    --surface-hover: 220 16% 14%;
+    --gradient-start: 174 72% 56%;
+    --gradient-end: 199 89% 48%;
+    --text-bright: 0 0% 100%;
+
+    font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+
+  ::selection {
+    background: hsl(174 72% 56% / 0.3);
+    color: hsl(0 0% 100%);
+  }
+
+  /* Smooth scroll */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--background));
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, hsl(174 72% 56% / 0.6), hsl(240 80% 60% / 0.6));
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, hsl(174 72% 56% / 0.9), hsl(240 80% 60% / 0.9));
+  }
+}
+
+/* ─────────────────────────────────────────────────────────
+   FONT UTILITIES
+──────────────────────────────────────────────────────────── */
+@layer utilities {
+  .font-display {
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .font-orbitron {
+    font-family: 'Orbitron', sans-serif;
+  }
+
+  .font-space {
+    font-family: 'Space Grotesk', sans-serif;
+  }
+
+  .font-rajdhani {
+    font-family: 'Rajdhani', sans-serif;
+  }
+
+  .font-oxanium {
+    font-family: 'Oxanium', sans-serif;
+  }
+
+  /* ── Gradient text ── */
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, hsl(var(--gradient-start)), hsl(var(--gradient-end)));
+  }
+
+  .text-gradient-animated {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, #22d3ee, #3b82f6, #a855f7, #ec4899, #22d3ee);
+    background-size: 300% 300%;
+    animation: gradient-shift 5s ease infinite;
+  }
+
+  .text-gradient-fire {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, #f97316, #ef4444, #fbbf24);
+    background-size: 200% 200%;
+    animation: gradient-shift 3s ease infinite;
+  }
+
+  .text-gradient-aurora {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, #34d399, #22d3ee, #818cf8, #c084fc);
+    background-size: 300% 300%;
+    animation: gradient-shift 6s ease infinite;
+  }
+
+  .text-neon-cyan {
+    color: #22d3ee;
+    text-shadow: 0 0 8px #22d3ee, 0 0 25px #22d3ee66, 0 0 50px #22d3ee33;
+  }
+
+  .text-neon-purple {
+    color: #c084fc;
+    text-shadow: 0 0 8px #c084fc, 0 0 25px #c084fc66, 0 0 50px #c084fc33;
+  }
+
+  .text-neon-pink {
+    color: #f472b6;
+    text-shadow: 0 0 8px #f472b6, 0 0 25px #f472b666, 0 0 50px #f472b633;
+  }
+
+  /* ── Glows ── */
+  .glow-border {
+    box-shadow: 0 0 0 1px hsl(var(--glow) / 0.15), 0 0 20px -5px hsl(var(--glow) / 0.1);
+  }
+
+  .glow-text {
+    text-shadow: 0 0 30px hsl(var(--glow) / 0.4);
+  }
+
+  .glow-cyan {
+    box-shadow: 0 0 20px rgba(34, 211, 238, 0.5), 0 0 40px rgba(34, 211, 238, 0.2);
+  }
+
+  .glow-blue {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.5), 0 0 40px rgba(59, 130, 246, 0.2);
+  }
+
+  .glow-purple {
+    box-shadow: 0 0 20px rgba(192, 132, 252, 0.5), 0 0 40px rgba(192, 132, 252, 0.2);
+  }
+
+  /* ── Glass + Surface ── */
+  .surface-glass {
+    @apply bg-card/80 backdrop-blur-xl border border-border;
+  }
+
+  .glass-card {
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(34, 211, 238, 0.15);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  .glass-card:hover {
+    border-color: rgba(34, 211, 238, 0.4);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 30px rgba(34, 211, 238, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+
+  /* ── Hover lift ── */
+  .hover-lift {
+    @apply transition-all duration-300;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 60px -15px hsl(var(--glow) / 0.3);
+  }
+
+  /* ── Neon border ── */
+  .neon-border {
+    border: 1px solid rgba(34, 211, 238, 0.4);
+    box-shadow: 0 0 10px rgba(34, 211, 238, 0.15), inset 0 0 10px rgba(34, 211, 238, 0.05);
+    transition: all 0.3s ease;
+  }
+
+  .neon-border:hover {
+    border-color: rgba(34, 211, 238, 0.8);
+    box-shadow: 0 0 20px rgba(34, 211, 238, 0.4), inset 0 0 20px rgba(34, 211, 238, 0.1);
+  }
+
+  /* ── Gradient border spinner ── */
+  .gradient-border-spin {
+    position: relative;
+  }
+
+  .gradient-border-spin::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: inherit;
+    background: conic-gradient(from 0deg, #22d3ee, #3b82f6, #a855f7, #ec4899, #22d3ee);
+    animation: border-spin 4s linear infinite;
+    z-index: -1;
+  }
+
+  /* ── Typewriter cursor ── */
+  .typewriter-cursor::after {
+    content: '|';
+    animation: blink 1s step-end infinite;
+    color: #22d3ee;
+    font-weight: 300;
+  }
+
+  /* ── Shimmer ── */
+  .shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .shimmer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.08) 50%, transparent 100%);
+    animation: shimmer-sweep 2.5s ease-in-out infinite;
+  }
+
+  /* ── Section layout ── */
+  .section-padding {
+    @apply py-24 px-6 md:px-12 lg:px-24;
+  }
+
+  .grid-pattern {
+    background-image:
+      linear-gradient(hsl(var(--border) / 0.25) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--border) / 0.25) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  /* ── Floating dots decoration ── */
+  .floating-dots {
+    position: relative;
+  }
+
+  .floating-dots::before,
+  .floating-dots::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    animation: float-dots 6s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  .floating-dots::before {
+    width: 6px;
+    height: 6px;
+    background: #22d3ee;
+    top: -8px;
+    right: 20px;
+  }
+
+  .floating-dots::after {
+    width: 4px;
+    height: 4px;
+    background: #a855f7;
+    bottom: -6px;
+    left: 10px;
+    animation-delay: 1.5s;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────
+   KEYFRAMES
+──────────────────────────────────────────────────────────── */
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes border-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes blink {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+}
+
+/* CSS typing reveal for the name — smooth, GPU-accelerated */
+@keyframes typing-name {
+  from {
+    width: 0;
+  }
+
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes blink-cursor {
+
+  0%,
+  100% {
+    border-color: #22d3ee;
+  }
+
+  50% {
+    border-color: transparent;
+  }
+}
+
+/* Animated colour sweep for hero name */
+@keyframes name-gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes shimmer-sweep {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes float-dots {
+
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.6;
+  }
+
+  50% {
+    transform: translateY(-12px) scale(1.2);
+    opacity: 1;
+  }
+}
+
+@keyframes blob {
+
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  33% {
+    transform: translate(30px, -50px) scale(1.1);
+  }
+
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+}
+
+@keyframes glow-pulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(34, 211, 238, 0.4);
+  }
+
+  50% {
+    box-shadow: 0 0 50px rgba(34, 211, 238, 0.8), 0 0 80px rgba(34, 211, 238, 0.3);
+  }
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-16px);
+  }
+}
+
+@keyframes slide-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes ping-slow {
+
+  75%,
+  100% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
+@keyframes text-shimmer {
+  0% {
+    background-position: -200% center;
+  }
+
+  100% {
+    background-position: 200% center;
+  }
+}
+
+@keyframes neon-flicker {
+
+  0%,
+  19%,
+  21%,
+  23%,
+  25%,
+  54%,
+  56%,
+  100% {
+    text-shadow: 0 0 7px #22d3ee, 0 0 21px #22d3ee, 0 0 42px #22d3ee;
+  }
+
+  20%,
+  24%,
+  55% {
+    text-shadow: none;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────
+   ANIMATION CLASSES
+──────────────────────────────────────────────────────────── */
+.animate-blob {
+  animation: blob 7s infinite;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
+
+.animation-delay-6000 {
+  animation-delay: 6s;
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 2.5s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
+
+.animate-ping-slow {
+  animation: ping-slow 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.animate-slide-in-up {
+  animation: slide-in-up 0.7s ease-out both;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out both;
+}
+
+.text-shimmer {
+  background: linear-gradient(90deg, #22d3ee 0%, #ffffff 40%, #a855f7 60%, #22d3ee 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: text-shimmer 3s linear infinite;
+}
+
+.neon-flicker {
+  animation: neon-flicker 3s infinite;
+}
