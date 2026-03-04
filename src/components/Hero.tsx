@@ -1,7 +1,16 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { fadeUp, staggerContainer } from "@/lib/motions";
 import { about } from "@/lib/data";
-import { ArrowDown, Github, Linkedin, Twitter, Sparkles, Download } from "lucide-react";
+import { ArrowDown, Github, Linkedin, Sparkles, Download } from "lucide-react";
+
+// MonkeyType logo SVG icon
+function MonkeyTypeIcon({ size = 24 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 128 128" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <text x="50%" y="72%" dominantBaseline="middle" textAnchor="middle" fontSize="80" fontFamily="monospace" fontWeight="bold">mt</text>
+    </svg>
+  );
+}
 import heroBg from "@/assets/hero-bg.jpg";
 import profileImg from "@/assets/profile.jpeg";
 import AnimatedBackground from "./AnimatedBackground";
@@ -265,7 +274,7 @@ export default function Hero() {
               {[
                 { icon: Github, href: about.github, label: "GitHub" },
                 { icon: Linkedin, href: about.linkedin, label: "LinkedIn" },
-                { icon: Twitter, href: about.twitter, label: "Twitter" },
+                { icon: MonkeyTypeIcon, href: about.monkeytype, label: "MonkeyType" },
               ].map(({ icon: Icon, href, label }, i) => (
                 <motion.a
                   key={label}

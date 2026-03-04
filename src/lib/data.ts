@@ -138,6 +138,6 @@ export const about = {
   email: "alex@example.dev",
   github: "https://github.com",
   linkedin: "https://linkedin.com",
-  twitter: "https://twitter.com",
+  monkeytype: "https://monkeytype.com/profile/yashtarapara",
   resumeUrl: "#",
 };

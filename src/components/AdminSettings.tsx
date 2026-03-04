@@ -22,7 +22,7 @@ export default function AdminSettings() {
     location: "City, Country",
     github_url: "",
     linkedin_url: "",
-    twitter_url: "",
+    monkeytype_url: "",
     resume_url: "",
   };
 
@@ -126,8 +126,8 @@ export default function AdminSettings() {
           {message && (
             <div
               className={`mb-4 p-4 rounded ${message.includes("successfully")
-                  ? "bg-green-500/10 border border-green-500/50 text-green-400"
-                  : "bg-red-500/10 border border-red-500/50 text-red-400"
+                ? "bg-green-500/10 border border-green-500/50 text-green-400"
+                : "bg-red-500/10 border border-red-500/50 text-red-400"
                 }`}
             >
               {message}
@@ -239,15 +239,15 @@ export default function AdminSettings() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Twitter URL
+                    MonkeyType URL
                   </label>
                   <Input
-                    value={settings.twitter_url || ""}
+                    value={settings.monkeytype_url || ""}
                     onChange={(e) =>
-                      handleChange("twitter_url", e.target.value)
+                      handleChange("monkeytype_url", e.target.value)
                     }
                     className="bg-gray-700 border-gray-600"
-                    placeholder="https://twitter.com/yourname"
+                    placeholder="https://monkeytype.com/profile/yourname"
                   />
                 </div>
               </div>

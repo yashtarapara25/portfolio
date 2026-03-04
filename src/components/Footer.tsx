@@ -1,6 +1,15 @@
 import { motion } from "framer-motion";
 import { useSiteSettings } from "@/hooks/use-portfolio-data";
-import { Github, Linkedin, Twitter, Code2, Zap } from "lucide-react";
+import { Github, Linkedin, Code2, Zap } from "lucide-react";
+
+// MonkeyType logo SVG icon
+function MonkeyTypeIcon({ size = 20 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 128 128" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <text x="50%" y="72%" dominantBaseline="middle" textAnchor="middle" fontSize="80" fontFamily="monospace" fontWeight="bold">mt</text>
+    </svg>
+  );
+}
 
 export default function Footer() {
   const { settings } = useSiteSettings();
@@ -8,7 +17,7 @@ export default function Footer() {
   const socialLinks = [
     { icon: Github, href: settings.github_url, label: "GitHub", color: "hover:text-white" },
     { icon: Linkedin, href: settings.linkedin_url, label: "LinkedIn", color: "hover:text-blue-400" },
-    { icon: Twitter, href: settings.twitter_url, label: "Twitter", color: "hover:text-cyan-400" },
+    { icon: MonkeyTypeIcon, href: settings.monkeytype_url, label: "MonkeyType", color: "hover:text-yellow-400" },
   ].filter((link) => link.href);
 
   return (
