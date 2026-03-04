@@ -156,6 +156,7 @@ function ResumeButton() {
 
 export default function Hero() {
   const profileImage = profileImg;
+  const { settings } = useSiteSettings();
 
   const ROLES = ["Data Analytics", "Data Scientist", "AI Engineer", "Web Developer"];
   const [roleIndex, setRoleIndex] = useState(0);
@@ -301,9 +302,9 @@ export default function Hero() {
             {/* Social Links */}
             <motion.div variants={fadeUp} className="flex items-center gap-8 mt-12">
               {[
-                { icon: Github, href: about.github, label: "GitHub" },
-                { icon: Linkedin, href: about.linkedin, label: "LinkedIn" },
-                { icon: MonkeyTypeIcon, href: about.monkeytype, label: "MonkeyType" },
+                { icon: Github, href: settings.github_url || about.github, label: "GitHub" },
+                { icon: Linkedin, href: settings.linkedin_url || about.linkedin, label: "LinkedIn" },
+                { icon: MonkeyTypeIcon, href: settings.monkeytype_url || about.monkeytype, label: "MonkeyType" },
               ].map(({ icon: Icon, href, label }, i) => (
                 <motion.a
                   key={label}
