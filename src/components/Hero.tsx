@@ -4,7 +4,7 @@ import { about } from "@/lib/data";
 import { ArrowDown, Github, Linkedin, Sparkles, Download } from "lucide-react";
 
 // MonkeyType — attractive monkey face icon, stroke-only, matches lucide-react style
-function MonkeyTypeIcon({ size = 24 }: { size?: number }) {
+function MonkeyTypeIcon({ size = 30 }: { size?: number }) {
   return (
     <svg
       width={size}

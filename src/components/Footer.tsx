@@ -3,7 +3,7 @@ import { useSiteSettings } from "@/hooks/use-portfolio-data";
 import { Github, Linkedin, Code2, Zap } from "lucide-react";
 
 // MonkeyType — attractive monkey face icon, stroke-only, matches lucide-react style
-function MonkeyTypeIcon({ size = 20 }: { size?: number }) {
+function MonkeyTypeIcon({ size = 26 }: { size?: number }) {
   return (
     <svg
       width={size}
