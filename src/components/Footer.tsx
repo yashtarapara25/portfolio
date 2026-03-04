@@ -2,11 +2,40 @@ import { motion } from "framer-motion";
 import { useSiteSettings } from "@/hooks/use-portfolio-data";
 import { Github, Linkedin, Code2, Zap } from "lucide-react";
 
-// MonkeyType logo SVG icon
+// MonkeyType — attractive monkey face icon, stroke-only, matches lucide-react style
 function MonkeyTypeIcon({ size = 20 }: { size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 128 128" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-      <text x="50%" y="72%" dominantBaseline="middle" textAnchor="middle" fontSize="80" fontFamily="monospace" fontWeight="bold">mt</text>
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      {/* Left ear */}
+      <circle cx="4.5" cy="11" r="2.2" />
+      {/* Right ear */}
+      <circle cx="19.5" cy="11" r="2.2" />
+      {/* Inner left ear */}
+      <circle cx="4.5" cy="11" r="0.9" strokeWidth="1" />
+      {/* Inner right ear */}
+      <circle cx="19.5" cy="11" r="0.9" strokeWidth="1" />
+      {/* Head */}
+      <circle cx="12" cy="11.5" r="7" />
+      {/* Muzzle */}
+      <ellipse cx="12" cy="14.2" rx="3" ry="2" />
+      {/* Left eye */}
+      <circle cx="9.5" cy="10" r="1" fill="currentColor" stroke="none" />
+      {/* Right eye */}
+      <circle cx="14.5" cy="10" r="1" fill="currentColor" stroke="none" />
+      {/* Nose */}
+      <path d="M11.2 13.5 Q12 14 12.8 13.5" strokeWidth="1.2" />
+      {/* Smile */}
+      <path d="M10 15.2 Q12 16.6 14 15.2" strokeWidth="1.2" />
     </svg>
   );
 }
