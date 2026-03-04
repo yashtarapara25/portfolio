@@ -1,10 +1,8 @@
 name: Supabase Keep-Alive
 
 on:
-  # Run at 08:00 UTC every 5 days (Mon, Sat, Thu, Tue, Sun pattern)
   schedule:
     - cron: "0 8 */5 * *"
-  # Allow manual trigger from GitHub Actions tab
   workflow_dispatch:
 
 jobs:
@@ -14,16 +12,33 @@ jobs:
 
     steps:
       - name: Ping Supabase REST API
+        env:
+          # Support both naming conventions the user might have used
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL || secrets.VITE_SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_ANON_KEY || secrets.VITE_SUPABASE_PUBLISHABLE_KEY || secrets.SUPABASE_KEY }}
         run: |
           echo "🏓 Pinging Supabase at $(date)..."
 
-          # Simple GET to site_settings table — just needs to return any row
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-            "${{ secrets.SUPABASE_URL }}/rest/v1/site_settings?limit=1" \
-            -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
-            -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}")
+          if [ -z "$SUPABASE_URL" ]; then
+            echo "❌ ERROR: SUPABASE_URL secret is empty or not set."
+            echo "Please add a secret named SUPABASE_URL with your Supabase Project URL."
+            exit 1
+          fi
 
-          echo "Response status: $STATUS"
+          if [ -z "$SUPABASE_KEY" ]; then
+            echo "❌ ERROR: Supabase anon key secret is empty or not set."
+            echo "Please add a secret named SUPABASE_ANON_KEY with your Supabase anon/public key."
+            exit 1
+          fi
+
+          echo "✅ Secrets found. Pinging: $SUPABASE_URL"
+
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            "${SUPABASE_URL}/rest/v1/site_settings?limit=1" \
+            -H "apikey: ${SUPABASE_KEY}" \
+            -H "Authorization: Bearer ${SUPABASE_KEY}")
+
+          echo "📊 Response status: $STATUS"
 
           if [ "$STATUS" -ge 200 ] && [ "$STATUS" -lt 300 ]; then
             echo "✅ Supabase is alive and responding!"
