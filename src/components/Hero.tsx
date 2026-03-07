@@ -134,7 +134,6 @@ function ResumeButton() {
   return (
     <motion.a
       href={resumeUrl}
-      download
       target="_blank"
       rel="noopener noreferrer"
       whileHover={{ scale: 1.05, borderColor: "rgb(34,211,238)", boxShadow: "0 0 24px rgba(34,211,238,0.35)" }}
