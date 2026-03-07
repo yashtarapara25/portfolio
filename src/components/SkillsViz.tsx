@@ -79,7 +79,7 @@ export default function SkillsViz() {
           </motion.div>
 
           {/* Grid layout */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {loading ? (
               // Loading skeletons for grid
               [1, 2, 3].map(i => (
@@ -142,12 +142,15 @@ export default function SkillsViz() {
                               whileInView={{ width: `${skill.level}%` }}
                               viewport={{ once: true }}
                               transition={{ duration: 1.2, delay: groupIndex * 0.1 + i * 0.05, ease: "easeOut" }}
-                              className="h-full rounded-full relative"
+                              className="h-full rounded-full relative overflow-hidden"
                               style={{
                                 background: getGradientCSS(cat.key),
                                 boxShadow: `0 0 10px rgba(34,211,238,${skill.level > 80 ? 0.4 : 0.2})`,
                               }}
-                            />
+                            >
+                              {/* Shimmer sweep inside bar */}
+                              <div className="absolute top-0 bottom-0 w-full left-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-[150%] animate-[shimmer_2s_infinite]" />
+                            </motion.div>
                           </div>
                         </div>
                       ))}
