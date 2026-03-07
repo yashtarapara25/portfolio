@@ -110,11 +110,20 @@ export default function SkillsViz() {
                   <motion.div
                     key={cat.key}
                     variants={fadeUp}
-                    className="glass-card rounded-2xl p-6 border border-white/5 hover:border-cyan-500/20 transition-all duration-300"
+                    whileHover={{
+                      y: -8,
+                      scale: 1.01,
+                      boxShadow: "0 20px 40px -15px rgba(34,211,238,0.25)",
+                      borderColor: "rgba(34,211,238,0.3)"
+                    }}
+                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                    className="glass-card rounded-2xl p-6 border border-white/5 transition-all duration-300 relative group/card"
                   >
+                    {/* Glowing ambient background on hover */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/0 via-purple-500/0 to-cyan-500/0 group-hover/card:from-cyan-500/5 group-hover/card:to-purple-500/5 transition-all duration-500 rounded-2xl pointer-events-none" />
                     {/* Category Header */}
-                    <div className="flex items-center gap-3 mb-6">
-                      <div className={`p-2 rounded-xl bg-gradient-to-br ${getGradient(cat.key)} bg-opacity-10 shadow-lg shadow-black/20`}>
+                    <div className="flex items-center gap-3 mb-6 relative z-10">
+                      <div className={`p-2 rounded-xl bg-gradient-to-br ${getGradient(cat.key)} bg-opacity-10 shadow-lg shadow-black/20 animate-pulse`}>
                         <Icon size={18} className="text-white" />
                       </div>
                       <h3 className="text-lg font-bold font-orbitron text-white">
@@ -123,9 +132,14 @@ export default function SkillsViz() {
                     </div>
 
                     {/* Category Skills */}
-                    <div className="space-y-6">
+                    <div className="space-y-6 relative z-10">
                       {categorySkills.map((skill, i) => (
-                        <div key={skill.name} className="group">
+                        <motion.div
+                          key={skill.name}
+                          className="group"
+                          whileHover={{ x: 6 }}
+                          transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                        >
                           <div className="flex justify-between items-end mb-2">
                             <span className="text-sm font-space font-semibold text-slate-200 group-hover:text-white transition-colors">
                               {skill.name}
@@ -141,7 +155,7 @@ export default function SkillsViz() {
                               initial={{ width: 0 }}
                               whileInView={{ width: `${skill.level}%` }}
                               viewport={{ once: true }}
-                              transition={{ duration: 1.2, delay: groupIndex * 0.1 + i * 0.05, ease: "easeOut" }}
+                              transition={{ type: "spring", bounce: 0.4, duration: 1.5, delay: groupIndex * 0.1 + i * 0.05 }}
                               className="h-full rounded-full relative overflow-hidden"
                               style={{
                                 background: getGradientCSS(cat.key),
@@ -152,7 +166,7 @@ export default function SkillsViz() {
                               <div className="absolute top-0 bottom-0 w-full left-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-[150%] animate-[shimmer_2s_infinite]" />
                             </motion.div>
                           </div>
-                        </div>
+                        </motion.div>
                       ))}
                     </div>
                   </motion.div>
