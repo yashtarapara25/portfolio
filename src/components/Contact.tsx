@@ -75,8 +75,8 @@ export default function Contact() {
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-purple-500/5 via-transparent to-cyan-500/5 pointer-events-none" />
       <div className="absolute inset-0 grid-pattern opacity-15 pointer-events-none" />
-      <div className="absolute top-1/4 -right-32 w-72 h-72 bg-purple-500/8 rounded-full blur-3xl animate-blob pointer-events-none" />
-      <div className="absolute -bottom-16 left-1/4 w-72 h-72 bg-cyan-500/8 rounded-full blur-3xl animate-blob animation-delay-4000 pointer-events-none" />
+      <div className="absolute top-1/4 -right-32 w-72 h-72 bg-purple-500/8 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-16 left-1/4 w-72 h-72 bg-cyan-500/8 rounded-full blur-3xl pointer-events-none" />
 
       <div className="container max-w-4xl mx-auto relative z-10">
         <motion.div
@@ -89,8 +89,8 @@ export default function Contact() {
           <motion.div variants={fadeUp} className="mb-14 text-center">
             <div className="flex items-center justify-center gap-2 mb-3">
               <motion.span
-                animate={{ scale: [1, 1.3, 1], rotate: [0, 10, -10, 0] }}
-                transition={{ duration: 2.5, repeat: Infinity }}
+                whileHover={{ scale: 1.3, rotate: 10 }}
+                transition={{ duration: 0.3 }}
                 className="text-purple-400"
               >
                 <MessageCircle size={18} />

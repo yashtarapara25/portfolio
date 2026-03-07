@@ -67,8 +67,8 @@ export default function About() {
   return (
     <section id="about" className="section-padding relative overflow-hidden">
       {/* Decorative blobs */}
-      <div className="absolute top-10 right-10 w-80 h-80 bg-cyan-500/5 rounded-full blur-3xl animate-blob pointer-events-none" />
-      <div className="absolute bottom-10 left-10 w-80 h-80 bg-purple-500/5 rounded-full blur-3xl animate-blob animation-delay-4000 pointer-events-none" />
+      <div className="absolute top-10 right-10 w-80 h-80 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-10 left-10 w-80 h-80 bg-purple-500/5 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute inset-0 grid-pattern opacity-20 pointer-events-none" />
 
       <motion.div
@@ -82,8 +82,8 @@ export default function About() {
         <motion.div variants={fadeUp} className="mb-14">
           <div className="flex items-center gap-2 mb-3">
             <motion.span
-              animate={{ rotate: [0, 15, -15, 0], scale: [1, 1.2, 1] }}
-              transition={{ duration: 3, repeat: Infinity }}
+              whileHover={{ rotate: 180, scale: 1.2 }}
+              transition={{ duration: 0.5 }}
               className="text-cyan-400"
             >
               <Star size={16} fill="currentColor" />
@@ -157,8 +157,9 @@ export default function About() {
                 {/* Dynamic value with pulsing gradient text */}
                 <motion.div
                   className="text-2xl font-bold font-orbitron text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-400 min-h-[2rem] flex items-center justify-center"
-                  animate={{ opacity: [0.7, 1, 0.7] }}
-                  transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
+                  // Removed repeat: Infinity
+                  whileHover={{ scale: 1.1 }}
+                  transition={{ duration: 0.3 }}
                 >
                   {value}
                 </motion.div>

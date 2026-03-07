@@ -30,8 +30,8 @@ export default function ProjectCard({ project, index = 0 }: Props) {
           WebkitMaskComposite: "xor",
           maskComposite: "exclude",
         }}
-        animate={{ backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }}
-        transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+        animate={{ backgroundPosition: ["0% 50%", "100% 50%"] }}
+        transition={{ duration: 1.5, ease: "linear" }}
       />
 
       {/* Inner card */}
@@ -67,8 +67,9 @@ export default function ProjectCard({ project, index = 0 }: Props) {
               className="absolute top-3 right-3 flex items-center gap-1 text-xs font-orbitron font-bold px-3 py-1.5 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/40"
             >
               <motion.span
-                animate={{ rotate: [0, 20, -20, 0], scale: [1, 1.2, 1] }}
-                transition={{ duration: 3, repeat: Infinity }}
+                // Removed repeat: Infinity
+                whileHover={{ rotate: 180, scale: 1.2 }}
+                transition={{ duration: 0.3 }}
               >
                 <Star size={11} fill="currentColor" />
               </motion.span>
@@ -79,8 +80,9 @@ export default function ProjectCard({ project, index = 0 }: Props) {
           {/* Sparkle overlay on hover */}
           <motion.div
             className="absolute top-3 left-3 text-cyan-400 opacity-0 group-hover:opacity-100"
-            animate={{ rotate: [0, 360] }}
-            transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+            // Removed repeat: Infinity
+            whileHover={{ rotate: 180, scale: 1.2 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
           >
             <Sparkles size={16} />
           </motion.div>

@@ -74,8 +74,8 @@ export default function Footer() {
             <div className="flex items-center gap-2 mb-1">
               <motion.div
                 className="w-7 h-7 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center"
-                animate={{ rotate: [0, 360] }}
-                transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                whileHover={{ rotate: 180 }}
+                transition={{ duration: 0.5 }}
               >
                 <Code2 size={14} className="text-white" />
               </motion.div>
@@ -87,8 +87,8 @@ export default function Footer() {
             <p className="text-xs text-muted-foreground font-space flex items-center gap-1.5">
               © {new Date().getFullYear()} · Tarapara Yash ·
               <motion.span
-                animate={{ rotate: [0, 360] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                whileHover={{ rotate: 180 }}
+                transition={{ duration: 0.5 }}
                 className="text-cyan-400"
               >
                 <Code2 size={12} />
@@ -183,6 +183,6 @@ export default function Footer() {
           <Zap size={10} className="text-cyan-500" />
         </motion.p>
       </div>
-    </footer>
+    </footer >
   );
 }

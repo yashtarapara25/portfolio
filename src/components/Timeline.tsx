@@ -11,7 +11,7 @@ export default function Timeline() {
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-blue-500/5 via-transparent to-cyan-500/5 pointer-events-none" />
       <div className="absolute inset-0 grid-pattern opacity-15 pointer-events-none" />
-      <div className="absolute top-20 right-10 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl animate-blob pointer-events-none" />
+      <div className="absolute top-20 right-10 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="container max-w-4xl mx-auto relative z-10">
         <motion.div
@@ -24,8 +24,8 @@ export default function Timeline() {
           <motion.div variants={fadeUp} className="mb-14">
             <div className="flex items-center gap-2 mb-3">
               <motion.span
-                animate={{ rotate: [0, 360] }}
-                transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
+                whileHover={{ rotate: 15, scale: 1.1 }}
+                transition={{ duration: 0.3 }}
                 className="text-blue-400"
               >
                 <BookOpen size={18} />
@@ -71,12 +71,7 @@ export default function Timeline() {
                   viewport={{ once: true }}
                   transition={{ duration: 1.5, ease: "easeOut" }}
                 />
-                {/* Glowing orb descending the line */}
-                <motion.div
-                  className="absolute w-2 h-2 rounded-full bg-cyan-400 left-1/2 -translate-x-1/2 blur-sm"
-                  animate={{ top: ["0%", "100%", "0%"] }}
-                  transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-                />
+                {/* Glowing orb removed for performance */}
               </div>
 
               <div className="space-y-10">
@@ -101,12 +96,13 @@ export default function Timeline() {
                       >
                         <motion.div
                           className="w-1.5 h-1.5 rounded-full bg-cyan-400"
-                          animate={{ scale: [1, 1.5, 1] }}
-                          transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
+                          // Removed repeating scale animation
+                          whileHover={{ scale: 1.5 }}
+                          transition={{ duration: 0.3 }}
                         />
                       </motion.div>
-                      {/* Ping ring */}
-                      <div className="absolute inset-0 rounded-full border border-cyan-400/40 animate-ping-slow" />
+                      {/* Ping ring removed for performance */}
+                      <div className="absolute inset-0 rounded-full border border-cyan-400/40" />
                     </div>
 
                     {/* Year badge */}

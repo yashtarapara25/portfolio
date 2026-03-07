@@ -28,7 +28,7 @@ export default function AnimatedBackground() {
     resizeCanvas();
 
     const particles: Particle[] = [];
-    const PARTICLE_COUNT = 25;
+    const PARTICLE_COUNT = 12;
 
     const createParticle = (x?: number, y?: number): Particle => ({
       x: x ?? Math.random() * canvas.width,
