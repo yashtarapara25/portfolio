@@ -28,7 +28,7 @@ export default function AnimatedBackground() {
     resizeCanvas();
 
     const particles: Particle[] = [];
-    const PARTICLE_COUNT = 12;
+    const PARTICLE_COUNT = 30;
 
     const createParticle = (x?: number, y?: number): Particle => ({
       x: x ?? Math.random() * canvas.width,
@@ -98,9 +98,28 @@ export default function AnimatedBackground() {
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fillStyle = `hsla(${p.hue}, 100%, 80%, ${fadeOpacity * 1.5})`;
         ctx.fill();
-      });
 
-      // Connection drawing omitted to massively improve performance on lower end devices.
+        // Draw highly optimized connection lines
+        // Only loop forward to avoid double-drawing lines and cut checks in half 
+        for (let j = idx + 1; j < PARTICLE_COUNT; j++) {
+          const p2 = particles[j];
+          const dx = p.x - p2.x;
+          const dy = p.y - p2.y;
+          // Squared distance check (skips expensive Math.sqrt) - 14400 is 120 squared
+          const squaredDistance = dx * dx + dy * dy;
+
+          if (squaredDistance < 14400) {
+            // Further optimization: don't calculate exact distance for opacity unless needed
+            const lineOpacity = (1 - squaredDistance / 14400) * 0.15 * fadeOpacity;
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.strokeStyle = `hsla(${p.hue}, 80%, 70%, ${lineOpacity})`;
+            ctx.lineWidth = 0.6;
+            ctx.stroke();
+          }
+        }
+      });
 
       animationFrameId = requestAnimationFrame(animate);
     };
