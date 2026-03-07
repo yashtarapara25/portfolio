@@ -13,6 +13,7 @@ import AdminEducation from "./components/AdminEducation";
 import AdminSettings from "./components/AdminSettings";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminMessages from "./components/AdminMessages";
+import RealtimeStatus from "./components/RealtimeStatus";
 
 
 const queryClient = new QueryClient();
@@ -22,6 +23,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
+      <RealtimeStatus />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />

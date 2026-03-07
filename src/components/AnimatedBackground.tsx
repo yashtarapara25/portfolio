@@ -28,7 +28,7 @@ export default function AnimatedBackground() {
     resizeCanvas();
 
     const particles: Particle[] = [];
-    const PARTICLE_COUNT = 80;
+    const PARTICLE_COUNT = 25;
 
     const createParticle = (x?: number, y?: number): Particle => ({
       x: x ?? Math.random() * canvas.width,
@@ -100,25 +100,7 @@ export default function AnimatedBackground() {
         ctx.fill();
       });
 
-      // Draw connections
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-
-          if (dist < 120) {
-            const alpha = (1 - dist / 120) * 0.12;
-            const avgHue = (particles[i].hue + particles[j].hue) / 2;
-            ctx.strokeStyle = `hsla(${avgHue}, 80%, 70%, ${alpha})`;
-            ctx.lineWidth = 0.7;
-            ctx.beginPath();
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.stroke();
-          }
-        }
-      }
+      // Connection drawing omitted to massively improve performance on lower end devices.
 
       animationFrameId = requestAnimationFrame(animate);
     };

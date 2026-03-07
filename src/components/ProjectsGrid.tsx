@@ -10,8 +10,8 @@ export default function ProjectsGrid() {
   return (
     <section id="projects" className="section-padding relative overflow-hidden">
       {/* Background */}
-      <div className="absolute top-1/3 -right-16 w-72 h-72 bg-cyan-500/5 rounded-full blur-3xl animate-blob pointer-events-none" />
-      <div className="absolute bottom-1/3 -left-16 w-72 h-72 bg-purple-500/5 rounded-full blur-3xl animate-blob animation-delay-2000 pointer-events-none" />
+      <div className="absolute top-1/3 -right-16 w-72 h-72 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-1/3 -left-16 w-72 h-72 bg-purple-500/5 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute inset-0 grid-pattern opacity-15 pointer-events-none" />
 
       <div className="container max-w-6xl mx-auto relative z-10">

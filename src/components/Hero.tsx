@@ -180,9 +180,9 @@ export default function Hero() {
           loading="eager"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/70 to-background" />
-        <div className="absolute top-20 left-10 w-96 h-96 bg-cyan-500/10 rounded-full mix-blend-multiply filter blur-3xl animate-blob" />
-        <div className="absolute top-40 right-10 w-96 h-96 bg-purple-500/10 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000" />
-        <div className="absolute -bottom-32 left-1/3 w-96 h-96 bg-blue-500/10 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000" />
+        <div className="absolute top-20 left-10 w-96 h-96 bg-cyan-500/10 rounded-full blur-[100px]" />
+        <div className="absolute top-40 right-10 w-96 h-96 bg-purple-500/10 rounded-full blur-[100px]" />
+        <div className="absolute -bottom-32 left-1/3 w-96 h-96 bg-blue-500/10 rounded-full blur-[100px]" />
         <div className="absolute inset-0 grid-pattern opacity-30" />
       </div>
 
@@ -380,9 +380,9 @@ export default function Hero() {
 
               {/* === LAYER 1: outer aura glow (pulse) === */}
               <motion.div
-                className="absolute -inset-6 rounded-3xl blur-2xl"
-                style={{ background: "radial-gradient(ellipse, #22d3ee30 0%, #a855f730 50%, transparent 75%)" }}
-                animate={{ opacity: [0.4, 0.9, 0.4], scale: [0.97, 1.04, 0.97] }}
+                className="absolute -inset-6 rounded-3xl"
+                style={{ background: "radial-gradient(ellipse, rgba(34, 211, 238, 0.15) 0%, rgba(168, 85, 247, 0.15) 50%, transparent 75%)" }}
+                animate={{ opacity: [0.6, 1, 0.6], scale: [0.97, 1.04, 0.97] }}
                 transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
               />
 
@@ -396,15 +396,7 @@ export default function Hero() {
                 transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
               />
 
-              {/* === LAYER 3: blurred glow copy of the conic === */}
-              <motion.div
-                className="absolute -inset-4 rounded-3xl blur-xl opacity-60"
-                style={{
-                  background: "conic-gradient(from 0deg, #22d3ee, #3b82f6, #a855f7, #ec4899, #f59e0b, #10b981, #22d3ee)",
-                }}
-                animate={{ rotate: 360 }}
-                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-              />
+              {/* LAYER 3 Removed to improve scrolling performance and reduce GPU repaint (rotating a blurred layer is extremely expensive) */}
 
               {/* === LAYER 4: counter-rotating dashed electric arcs === */}
               <motion.div

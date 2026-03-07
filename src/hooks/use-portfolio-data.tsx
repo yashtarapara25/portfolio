@@ -1,7 +1,8 @@
-// New hook: usePortfolioCounts – fetches real counts from Supabase
+// Portfolio data hooks with Supabase Realtime streaming
+// n8n writes to Supabase → postgres_changes fires → hook re-fetches → site updates live
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import type { Tables } from "@/integrations/supabase";
+import type { Tables } from "@/integrations/supabase/types";
 
 type Project = Tables<"projects">;
 type Skill = Tables<"skills">;
@@ -15,6 +16,7 @@ export function useProjects() {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
+        setLoading(true);
         const { data, error } = await supabase
           .from("projects")
           .select("*")
@@ -30,6 +32,16 @@ export function useProjects() {
     };
 
     fetchProjects();
+
+    // 🔴 LIVE: streams changes from n8n / Supabase admin instantly
+    const channel = supabase
+      .channel("projects-realtime")
+      .on("postgres_changes", { event: "*", schema: "public", table: "projects" }, () => {
+        fetchProjects();
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
   }, []);
 
   return { projects, loading, error };
@@ -43,6 +55,7 @@ export function useSkills() {
   useEffect(() => {
     const fetchSkills = async () => {
       try {
+        setLoading(true);
         const { data, error } = await supabase
           .from("skills")
           .select("*")
@@ -59,6 +72,16 @@ export function useSkills() {
     };
 
     fetchSkills();
+
+    // 🔴 LIVE: streams changes from n8n / Supabase admin instantly
+    const channel = supabase
+      .channel("skills-realtime")
+      .on("postgres_changes", { event: "*", schema: "public", table: "skills" }, () => {
+        fetchSkills();
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
   }, []);
 
   return { skills, loading, error };
@@ -72,6 +95,7 @@ export function useEducation() {
   useEffect(() => {
     const fetchEducation = async () => {
       try {
+        setLoading(true);
         const { data, error } = await supabase
           .from("education")
           .select("*")
@@ -89,6 +113,16 @@ export function useEducation() {
     };
 
     fetchEducation();
+
+    // 🔴 LIVE: streams changes from n8n / Supabase admin instantly
+    const channel = supabase
+      .channel("education-realtime")
+      .on("postgres_changes", { event: "*", schema: "public", table: "education" }, () => {
+        fetchEducation();
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
   }, []);
 
   return { education, loading, error };
@@ -102,6 +136,7 @@ export function useSiteSettings() {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
+        setLoading(true);
         const { data, error } = await supabase
           .from("site_settings")
           .select("key, value");
@@ -122,6 +157,16 @@ export function useSiteSettings() {
     };
 
     fetchSettings();
+
+    // 🔴 LIVE: site_settings changes (bio, title, etc.) stream instantly
+    const channel = supabase
+      .channel("site-settings-realtime")
+      .on("postgres_changes", { event: "*", schema: "public", table: "site_settings" }, () => {
+        fetchSettings();
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
   }, []);
 
   return { settings, loading, error };

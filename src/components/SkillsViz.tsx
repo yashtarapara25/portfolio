@@ -40,9 +40,8 @@ export default function SkillsViz() {
 
   return (
     <section id="skills" className="section-padding relative overflow-hidden">
-      {/* Animated blobs */}
-      <div className="absolute top-1/4 -left-16 w-72 h-72 bg-cyan-500/5 rounded-full blur-3xl animate-blob pointer-events-none" />
-      <div className="absolute bottom-1/4 -right-16 w-72 h-72 bg-purple-500/5 rounded-full blur-3xl animate-blob animation-delay-4000 pointer-events-none" />
+      <div className="absolute top-1/4 -left-16 w-72 h-72 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-1/4 -right-16 w-72 h-72 bg-purple-500/5 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute inset-0 grid-pattern opacity-15 pointer-events-none" />
 
       <div className="container max-w-4xl mx-auto relative z-10">
@@ -93,8 +92,8 @@ export default function SkillsViz() {
                   whileHover={{ scale: 1.05, y: -2 }}
                   whileTap={{ scale: 0.95 }}
                   className={`flex items-center gap-1.5 text-xs font-space font-semibold px-4 py-2.5 rounded-xl transition-all relative overflow-hidden ${active === cat.key
-                      ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/40"
-                      : "glass-card text-muted-foreground hover:text-cyan-300 hover:border-cyan-500/50"
+                    ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/40"
+                    : "glass-card text-muted-foreground hover:text-cyan-300 hover:border-cyan-500/50"
                     }`}
                 >
                   <Icon size={13} />

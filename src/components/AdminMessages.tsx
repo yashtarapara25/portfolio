@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useAdmin } from "@/hooks/use-admin";
-import { ArrowLeft, Mail, Trash2, Eye, EyeOff, RefreshCw, Inbox } from "lucide-react";
+import { ArrowLeft, Mail, Trash2, Eye, EyeOff, RefreshCw, Inbox, Wifi } from "lucide-react";
 
 type Message = {
     id: string;
@@ -25,8 +25,29 @@ export default function AdminMessages() {
         if (!loading && !isAdmin) navigate("/admin/login");
     }, [isAdmin, loading, navigate]);
 
+    // 🔴 LIVE: Subscribe to new contact_messages via Supabase Realtime
+    const [liveConnected, setLiveConnected] = useState(false);
+    const toastRef = useRef<string | null>(null);
+
     useEffect(() => {
         fetchMessages();
+
+        const channel = supabase
+            .channel("admin-messages-live")
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            .on("postgres_changes", { event: "INSERT", schema: "public", table: "contact_messages" }, (payload: any) => {
+                // Prepend new message to top of list instantly
+                setMessages((prev) => [payload.new as Message, ...prev]);
+                toastRef.current = payload.new?.name;
+            })
+            .on("postgres_changes", { event: "UPDATE", schema: "public", table: "contact_messages" }, () => {
+                fetchMessages();
+            })
+            .subscribe((status) => {
+                setLiveConnected(status === "SUBSCRIBED");
+            });
+
+        return () => { supabase.removeChannel(channel); };
     }, []);
 
     const fetchMessages = async () => {
@@ -79,6 +100,15 @@ export default function AdminMessages() {
                                     {unread} new
                                 </span>
                             )}
+                            <span
+                                title={liveConnected ? "Live inbox connected" : "Connecting to live inbox…"}
+                                className={`flex items-center gap-1 ml-1 text-xs font-medium px-2 py-0.5 rounded-full border transition-all ${liveConnected
+                                        ? "text-green-400 border-green-500/30 bg-green-500/10"
+                                        : "text-gray-500 border-gray-600/30 bg-gray-700/20"
+                                    }`}
+                            >
+                                <Wifi size={10} /> {liveConnected ? "Live" : "…"}
+                            </span>
                         </h1>
                     </div>
                     <Button onClick={fetchMessages} variant="ghost" size="sm" disabled={fetching}>
