@@ -13,8 +13,8 @@ export default function AchievementsViz() {
             <motion.div
                 variants={staggerContainer}
                 initial="hidden"
-                whileInView="show"
-                viewport={{ once: true }}
+                whileInView="visible"
+                viewport={{ once: true, margin: "-50px" }}
             >
                 <motion.div variants={fadeUp} className="text-center mb-16">
                     <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-orange-500/10 to-pink-500/10 border border-orange-500/20 text-orange-400 mb-4 animate-pulse">
