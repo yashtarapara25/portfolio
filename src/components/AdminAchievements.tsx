@@ -64,6 +64,28 @@ export default function AdminAchievements() {
         }
     };
 
+    const handleDeleteAllAchievements = async () => {
+        if (!window.confirm("Are you absolutely sure you want to delete ALL achievements? This cannot be undone.")) return;
+        try {
+            setIsSaving(true);
+            setError(null);
+
+            // Delete all by getting all IDs and deleting them or passing a filter that matches all
+            const { error: deleteError } = await supabase
+                .from("achievements")
+                .delete()
+                .neq("id", "00000000-0000-0000-0000-000000000000"); // Deletes everything
+
+            if (deleteError) throw deleteError;
+
+        } catch (err: any) {
+            console.error("Supabase delete all error:", err);
+            setError(err?.message || err?.error_description || "Failed to delete all achievements");
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
     if (loading) {
         return <div className="text-slate-400 p-8 text-center bg-[#0a0f1d] rounded-2xl border border-white/5 animate-pulse">Loading achievements...</div>;
     }
@@ -75,14 +97,26 @@ export default function AdminAchievements() {
                     <Award size={24} />
                     <h2 className="text-xl font-orbitron font-bold">Achievements & Certificates</h2>
                 </div>
-                <button
-                    onClick={handleAddAchievement}
-                    disabled={isSaving}
-                    className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 hover:from-cyan-500/30 hover:to-purple-500/30 text-white rounded-xl transition-all duration-300 border border-white/10"
-                >
-                    <Plus size={18} />
-                    <span>Add Achievement</span>
-                </button>
+                <div className="flex items-center gap-3">
+                    {achievements.length > 0 && (
+                        <button
+                            onClick={handleDeleteAllAchievements}
+                            disabled={isSaving}
+                            className="flex items-center gap-2 px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-xl transition-all duration-300 border border-red-500/20"
+                        >
+                            <Trash2 size={18} />
+                            <span>Delete All</span>
+                        </button>
+                    )}
+                    <button
+                        onClick={handleAddAchievement}
+                        disabled={isSaving}
+                        className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 hover:from-cyan-500/30 hover:to-purple-500/30 text-white rounded-xl transition-all duration-300 border border-white/10"
+                    >
+                        <Plus size={18} />
+                        <span>Add Achievement</span>
+                    </button>
+                </div>
             </div>
 
             {error && (
