@@ -1,231 +1,443 @@
-import { useState } from "react";
-import { useAchievements } from "@/hooks/use-portfolio-data";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Save, Plus, Trash2, GripVertical, AlertCircle, Award } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { useAdmin } from "@/hooks/use-admin";
+import type { Tables } from "@/integrations/supabase";
+import { Plus, Trash2, Edit, ArrowLeft, Award, Image as ImageIcon, Link as LinkIcon } from "lucide-react";
+
+type Achievement = Tables<"achievements">;
 
 export default function AdminAchievements() {
-    const { achievements, loading } = useAchievements();
-    const [isSaving, setIsSaving] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    const { isAdmin, loading } = useAdmin();
+    const navigate = useNavigate();
+    const [achievements, setAchievements] = useState<Achievement[]>([]);
+    const [showForm, setShowForm] = useState(false);
+    const [editingId, setEditingId] = useState<string | null>(null);
+    const [formData, setFormData] = useState({
+        title: "",
+        issuer: "",
+        date: new Date().getFullYear().toString(),
+        description: "",
+        image_url: "",
+        credential_url: "",
+        sort_order: 0,
+    });
+    const [submitting, setSubmitting] = useState(false);
+    const [loadingAchievements, setLoadingAchievements] = useState(true);
+    const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-    const handleAddAchievement = async () => {
+    useEffect(() => {
+        if (!loading && !isAdmin) {
+            navigate("/admin/login");
+        }
+    }, [isAdmin, loading, navigate]);
+
+    useEffect(() => {
+        fetchAchievements();
+    }, []);
+
+    const fetchAchievements = async () => {
         try {
-            setIsSaving(true);
-            setError(null);
-            const newSortOrder = achievements.length;
+            const { data, error } = await supabase
+                .from("achievements")
+                .select("*")
+                .order("sort_order", { ascending: true });
 
-            const { error: insertError } = await supabase.from("achievements").insert({
-                title: "New Achievement",
-                issuer: "Issuing Organization",
+            if (error) throw error;
+            setAchievements(data || []);
+        } catch (err: any) {
+            console.error("Error fetching achievements:", err);
+            setErrorMsg(err?.message || "Failed to load achievements");
+        } finally {
+            setLoadingAchievements(false);
+        }
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setSubmitting(true);
+        setErrorMsg(null);
+
+        try {
+            if (editingId) {
+                const { error } = await supabase
+                    .from("achievements")
+                    .update(formData)
+                    .eq("id", editingId);
+
+                if (error) throw error;
+            } else {
+                const { error } = await supabase
+                    .from("achievements")
+                    .insert([formData]);
+
+                if (error) throw error;
+            }
+
+            setFormData({
+                title: "",
+                issuer: "",
                 date: new Date().getFullYear().toString(),
                 description: "",
                 image_url: "",
                 credential_url: "",
-                sort_order: newSortOrder,
+                sort_order: achievements.length + 1,
             });
-
-            if (insertError) throw insertError;
+            setEditingId(null);
+            setShowForm(false);
+            fetchAchievements();
         } catch (err: any) {
-            console.error("Supabase insert error:", err);
-            setError(err?.message || err?.error_description || "Failed to add achievement");
+            console.error("Error saving achievement:", err);
+            setErrorMsg(err?.message || "Failed to save achievement");
         } finally {
-            setIsSaving(false);
+            setSubmitting(false);
         }
     };
 
-    const handleUpdateAchievement = async (id: string, field: string, value: string | number) => {
-        try {
-            setError(null);
-            const { error: updateError } = await supabase
-                .from("achievements")
-                .update({ [field]: value })
-                .eq("id", id);
-
-            if (updateError) throw updateError;
-        } catch (err: any) {
-            console.error("Supabase update error:", err);
-            setError(err?.message || err?.error_description || "Failed to update achievement");
-        }
+    const handleEdit = (achievement: Achievement) => {
+        setFormData({
+            title: achievement.title,
+            issuer: achievement.issuer,
+            date: achievement.date,
+            description: achievement.description || "",
+            image_url: achievement.image_url || "",
+            credential_url: achievement.credential_url || "",
+            sort_order: achievement.sort_order || 0,
+        });
+        setEditingId(achievement.id);
+        setShowForm(true);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    const handleDeleteAchievement = async (id: string) => {
-        if (!window.confirm("Are you sure you want to delete this achievement?")) return;
+    const handleDelete = async (id: string) => {
+        if (!window.confirm("Are you sure you want to delete this achievement?"))
+            return;
+
         try {
-            setError(null);
-            const { error: deleteError } = await supabase
+            setErrorMsg(null);
+            const { error } = await supabase
                 .from("achievements")
                 .delete()
                 .eq("id", id);
 
-            if (deleteError) throw deleteError;
+            if (error) throw error;
+            fetchAchievements();
         } catch (err: any) {
-            console.error("Supabase delete error:", err);
-            setError(err?.message || err?.error_description || "Failed to delete achievement");
+            console.error("Error deleting achievement:", err);
+            setErrorMsg(err?.message || "Failed to delete achievement");
         }
     };
 
-    const handleDeleteAllAchievements = async () => {
-        if (!window.confirm("Are you absolutely sure you want to delete ALL achievements? This cannot be undone.")) return;
+    const handleDeleteAll = async () => {
+        if (!window.confirm("Are you absolutely sure you want to delete ALL achievements? This cannot be undone."))
+            return;
+
         try {
-            setIsSaving(true);
-            setError(null);
+            setErrorMsg(null);
+            // Get all IDs first
+            const { data, error: fetchError } = await supabase.from("achievements").select("id");
+            if (fetchError) throw fetchError;
 
-            // Delete all by getting all IDs and deleting them or passing a filter that matches all
-            const { error: deleteError } = await supabase
-                .from("achievements")
-                .delete()
-                .neq("id", "00000000-0000-0000-0000-000000000000"); // Deletes everything
+            if (data && data.length > 0) {
+                const ids = data.map(d => d.id);
+                const { error: deleteError } = await supabase
+                    .from("achievements")
+                    .delete()
+                    .in("id", ids);
 
-            if (deleteError) throw deleteError;
+                if (deleteError) throw deleteError;
+            }
 
+            fetchAchievements();
         } catch (err: any) {
-            console.error("Supabase delete all error:", err);
-            setError(err?.message || err?.error_description || "Failed to delete all achievements");
-        } finally {
-            setIsSaving(false);
+            console.error("Error deleting all achievements:", err);
+            setErrorMsg(err?.message || "Failed to delete all achievements");
         }
     };
 
     if (loading) {
-        return <div className="text-slate-400 p-8 text-center bg-[#0a0f1d] rounded-2xl border border-white/5 animate-pulse">Loading achievements...</div>;
+        return (
+            <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 to-gray-800">
+                <p className="text-gray-300">Loading...</p>
+            </div>
+        );
+    }
+
+    if (!isAdmin) {
+        return null;
     }
 
     return (
-        <div className="bg-[#0a0f1d] rounded-2xl border border-white/5 p-6 backdrop-blur-xl">
-            <div className="flex justify-between items-center mb-6">
-                <div className="flex items-center gap-3 text-cyan-400">
-                    <Award size={24} />
-                    <h2 className="text-xl font-orbitron font-bold">Achievements & Certificates</h2>
-                </div>
-                <div className="flex items-center gap-3">
-                    {achievements.length > 0 && (
-                        <button
-                            onClick={handleDeleteAllAchievements}
-                            disabled={isSaving}
-                            className="flex items-center gap-2 px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-xl transition-all duration-300 border border-red-500/20"
+        <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800">
+            <nav className="bg-gray-900 border-b border-gray-700 p-4">
+                <div className="container max-w-6xl mx-auto flex justify-between items-center">
+                    <div className="flex items-center gap-4">
+                        <Button
+                            onClick={() => navigate("/admin/dashboard")}
+                            variant="ghost"
+                            size="sm"
                         >
-                            <Trash2 size={18} />
-                            <span>Delete All</span>
-                        </button>
-                    )}
-                    <button
-                        onClick={handleAddAchievement}
-                        disabled={isSaving}
-                        className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 hover:from-cyan-500/30 hover:to-purple-500/30 text-white rounded-xl transition-all duration-300 border border-white/10"
-                    >
-                        <Plus size={18} />
-                        <span>Add Achievement</span>
-                    </button>
-                </div>
-            </div>
-
-            {error && (
-                <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 flex items-center gap-3">
-                    <AlertCircle size={20} />
-                    <p className="font-space text-sm">{error}</p>
-                </div>
-            )}
-
-            <div className="space-y-4">
-                {achievements.map((item) => (
-                    <div key={item.id} className="p-5 rounded-xl border border-white/10 bg-white/5 flex gap-4 group hover:border-cyan-500/30 transition-colors">
-                        <div className="mt-2 text-slate-500 cursor-grab active:cursor-grabbing">
-                            <GripVertical size={20} />
+                            <ArrowLeft size={16} className="mr-2" />
+                            Back
+                        </Button>
+                        <div className="flex items-center gap-2 text-cyan-400">
+                            <Award size={24} />
+                            <h1 className="text-2xl font-bold font-orbitron">Manage Achievements</h1>
                         </div>
+                    </div>
+                    <div className="flex gap-3">
+                        {achievements.length > 0 && (
+                            <Button
+                                onClick={handleDeleteAll}
+                                variant="destructive"
+                                className="gap-2 bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20"
+                            >
+                                <Trash2 size={16} />
+                                Delete All
+                            </Button>
+                        )}
+                        <Button
+                            onClick={() => {
+                                setFormData({
+                                    title: "",
+                                    issuer: "",
+                                    date: new Date().getFullYear().toString(),
+                                    description: "",
+                                    image_url: "",
+                                    credential_url: "",
+                                    sort_order: achievements.length + 1,
+                                });
+                                setEditingId(null);
+                                setShowForm(true);
+                            }}
+                            className="gap-2 bg-cyan-600 hover:bg-cyan-700 text-white"
+                        >
+                            <Plus size={16} />
+                            Add Achievement
+                        </Button>
+                    </div>
+                </div>
+            </nav>
 
-                        <div className="flex-1 space-y-4">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <label className="text-xs font-space font-medium text-slate-400 uppercase tracking-wider">Title</label>
-                                    <input
-                                        type="text"
-                                        value={item.title}
-                                        onChange={(e) => handleUpdateAchievement(item.id, "title", e.target.value)}
-                                        className="w-full bg-black/30 border border-white/10 rounded-lg px-4 py-2.5 text-white font-space focus:outline-none focus:border-cyan-500/50 transition-colors placeholder:text-slate-600"
+            <div className="container max-w-6xl mx-auto py-8 px-4">
+                {errorMsg && (
+                    <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400">
+                        {errorMsg}
+                    </div>
+                )}
+
+                {showForm && (
+                    <div className="bg-gray-800 rounded-lg border border-gray-700 p-6 mb-8 shadow-xl">
+                        <h2 className="text-2xl font-bold text-white mb-6 font-orbitron">
+                            {editingId ? "Edit Achievement" : "New Achievement"}
+                        </h2>
+
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                                        Title
+                                    </label>
+                                    <Input
+                                        value={formData.title}
+                                        onChange={(e) =>
+                                            setFormData({ ...formData, title: e.target.value })
+                                        }
+                                        className="bg-gray-700 border-gray-600 focus:border-cyan-500 text-white"
+                                        placeholder="e.g. AWS Certified Solutions Architect"
+                                        required
                                     />
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-xs font-space font-medium text-slate-400 uppercase tracking-wider">Issuer</label>
-                                    <input
-                                        type="text"
-                                        value={item.issuer}
-                                        onChange={(e) => handleUpdateAchievement(item.id, "issuer", e.target.value)}
-                                        className="w-full bg-black/30 border border-white/10 rounded-lg px-4 py-2.5 text-white font-space focus:outline-none focus:border-cyan-500/50 transition-colors placeholder:text-slate-600"
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                                        Issuer / Organization
+                                    </label>
+                                    <Input
+                                        value={formData.issuer}
+                                        onChange={(e) =>
+                                            setFormData({ ...formData, issuer: e.target.value })
+                                        }
+                                        className="bg-gray-700 border-gray-600 focus:border-cyan-500 text-white"
+                                        placeholder="e.g. Amazon Web Services"
+                                        required
                                     />
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <label className="text-xs font-space font-medium text-slate-400 uppercase tracking-wider">Date (e.g. "Oct 2023")</label>
-                                    <input
-                                        type="text"
-                                        value={item.date}
-                                        onChange={(e) => handleUpdateAchievement(item.id, "date", e.target.value)}
-                                        className="w-full bg-black/30 border border-white/10 rounded-lg px-4 py-2.5 text-white font-space focus:outline-none focus:border-cyan-500/50 transition-colors placeholder:text-slate-600"
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                                        Date
+                                    </label>
+                                    <Input
+                                        value={formData.date}
+                                        onChange={(e) =>
+                                            setFormData({ ...formData, date: e.target.value })
+                                        }
+                                        className="bg-gray-700 border-gray-600 focus:border-cyan-500 text-white"
+                                        placeholder="e.g. Oct 2023"
+                                        required
                                     />
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-xs font-space font-medium text-slate-400 uppercase tracking-wider">Sort Order</label>
-                                    <input
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                                        Sort Order
+                                    </label>
+                                    <Input
                                         type="number"
-                                        value={item.sort_order || 0}
-                                        onChange={(e) => handleUpdateAchievement(item.id, "sort_order", parseInt(e.target.value) || 0)}
-                                        className="w-full bg-black/30 border border-white/10 rounded-lg px-4 py-2.5 text-white font-space focus:outline-none focus:border-cyan-500/50 transition-colors placeholder:text-slate-600"
+                                        value={formData.sort_order}
+                                        onChange={(e) =>
+                                            setFormData({ ...formData, sort_order: parseInt(e.target.value) || 0 })
+                                        }
+                                        className="bg-gray-700 border-gray-600 focus:border-cyan-500 text-white"
                                     />
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <label className="text-xs font-space font-medium text-slate-400 uppercase tracking-wider">Image / Icon URL (Optional)</label>
-                                    <input
-                                        type="text"
-                                        value={item.image_url || ""}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-300 mb-2 flex items-center gap-2">
+                                        <ImageIcon size={14} /> Image / Badge URL (Optional)
+                                    </label>
+                                    <Input
+                                        value={formData.image_url}
+                                        onChange={(e) =>
+                                            setFormData({ ...formData, image_url: e.target.value })
+                                        }
+                                        className="bg-gray-700 border-gray-600 focus:border-cyan-500 text-white"
                                         placeholder="https://example.com/badge.png"
-                                        onChange={(e) => handleUpdateAchievement(item.id, "image_url", e.target.value)}
-                                        className="w-full bg-black/30 border border-white/10 rounded-lg px-4 py-2.5 text-white font-space focus:outline-none focus:border-cyan-500/50 transition-colors placeholder:text-slate-600"
                                     />
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-xs font-space font-medium text-slate-400 uppercase tracking-wider">Credential URL (Optional)</label>
-                                    <input
-                                        type="text"
-                                        value={item.credential_url || ""}
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-300 mb-2 flex items-center gap-2">
+                                        <LinkIcon size={14} /> Credential URL (Optional)
+                                    </label>
+                                    <Input
+                                        value={formData.credential_url}
+                                        onChange={(e) =>
+                                            setFormData({ ...formData, credential_url: e.target.value })
+                                        }
+                                        className="bg-gray-700 border-gray-600 focus:border-cyan-500 text-white"
                                         placeholder="https://verify.com/credential/123"
-                                        onChange={(e) => handleUpdateAchievement(item.id, "credential_url", e.target.value)}
-                                        className="w-full bg-black/30 border border-white/10 rounded-lg px-4 py-2.5 text-white font-space focus:outline-none focus:border-cyan-500/50 transition-colors placeholder:text-slate-600"
                                     />
                                 </div>
                             </div>
 
-                            <div className="space-y-2">
-                                <label className="text-xs font-space font-medium text-slate-400 uppercase tracking-wider">Description (Optional)</label>
-                                <textarea
-                                    value={item.description || ""}
-                                    rows={2}
-                                    onChange={(e) => handleUpdateAchievement(item.id, "description", e.target.value)}
-                                    className="w-full bg-black/30 border border-white/10 rounded-lg px-4 py-2.5 text-white font-space focus:outline-none focus:border-cyan-500/50 transition-colors placeholder:text-slate-600 resize-none"
+                            <div>
+                                <label className="block text-sm font-medium text-gray-300 mb-2">
+                                    Description (Optional)
+                                </label>
+                                <Textarea
+                                    value={formData.description}
+                                    onChange={(e) =>
+                                        setFormData({ ...formData, description: e.target.value })
+                                    }
+                                    className="bg-gray-700 border-gray-600 focus:border-cyan-500 min-h-[100px] text-white"
+                                    placeholder="Brief description of the certification or what you learned..."
                                 />
                             </div>
 
-                        </div>
-
-                        <button
-                            onClick={() => handleDeleteAchievement(item.id)}
-                            className="p-2 text-slate-500 hover:bg-red-500/20 hover:text-red-400 rounded-lg transition-colors h-fit"
-                            title="Delete Achievement"
-                        >
-                            <Trash2 size={20} />
-                        </button>
-                    </div>
-                ))}
-
-                {achievements.length === 0 && (
-                    <div className="text-center py-12 border border-dashed border-white/10 rounded-xl">
-                        <p className="text-slate-500 font-space">No achievements added yet.</p>
+                            <div className="flex gap-3 pt-4">
+                                <Button
+                                    type="submit"
+                                    disabled={submitting}
+                                    className="bg-cyan-600 hover:bg-cyan-700 text-white"
+                                >
+                                    {submitting ? "Saving..." : "Save Achievement"}
+                                </Button>
+                                <Button
+                                    type="button"
+                                    onClick={() => {
+                                        setShowForm(false);
+                                        setEditingId(null);
+                                    }}
+                                    variant="outline"
+                                    className="bg-transparent text-gray-300 border-gray-600 hover:bg-gray-700"
+                                >
+                                    Cancel
+                                </Button>
+                            </div>
+                        </form>
                     </div>
                 )}
+
+                <div className="space-y-4">
+                    <h2 className="text-xl font-bold text-white font-orbitron mb-6">
+                        {loadingAchievements
+                            ? "Loading..."
+                            : `Current Achievements (${achievements.length})`}
+                    </h2>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {achievements.map((achievement) => (
+                            <div
+                                key={achievement.id}
+                                className="bg-gray-800 rounded-xl border border-gray-700 flex flex-col overflow-hidden hover:border-cyan-500/50 transition-colors"
+                            >
+                                <div className="p-5 flex-1 space-y-3">
+                                    <div className="flex justify-between items-start">
+                                        <div className="p-2 rounded-lg bg-cyan-500/10 text-cyan-400">
+                                            <Award size={20} />
+                                        </div>
+                                        <span className="text-xs font-semibold px-2 py-1 bg-gray-700 text-gray-300 rounded-md">
+                                            {achievement.date}
+                                        </span>
+                                    </div>
+
+                                    <div>
+                                        <h3 className="text-lg font-bold text-white leading-tight mb-1">
+                                            {achievement.title}
+                                        </h3>
+                                        <p className="text-cyan-400 text-sm font-medium">
+                                            {achievement.issuer}
+                                        </p>
+                                    </div>
+
+                                    {achievement.description && (
+                                        <p className="text-gray-400 text-sm line-clamp-2">
+                                            {achievement.description}
+                                        </p>
+                                    )}
+                                </div>
+
+                                <div className="bg-gray-900/50 p-3 border-t border-gray-700 flex justify-end gap-2">
+                                    <Button
+                                        onClick={() => handleEdit(achievement)}
+                                        variant="ghost"
+                                        size="sm"
+                                        className="text-gray-300 hover:text-cyan-400 hover:bg-cyan-400/10 transition-colors"
+                                    >
+                                        <Edit size={16} className="mr-2" />
+                                        Edit
+                                    </Button>
+                                    <Button
+                                        onClick={() => handleDelete(achievement.id)}
+                                        variant="ghost"
+                                        size="sm"
+                                        className="text-gray-300 hover:text-red-400 hover:bg-red-400/10 transition-colors"
+                                    >
+                                        <Trash2 size={16} className="mr-2" />
+                                        Delete
+                                    </Button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    {!loadingAchievements && achievements.length === 0 && (
+                        <div className="text-center py-16 border border-dashed border-gray-700 rounded-xl bg-gray-800/50">
+                            <Award className="mx-auto text-gray-600 mb-4" size={48} />
+                            <p className="text-gray-400 text-lg">No achievements added yet.</p>
+                            <p className="text-gray-500 text-sm mt-2">Click "Add Achievement" to get started.</p>
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );
