@@ -27,13 +27,26 @@ export default function AnimatedBackground() {
     };
     resizeCanvas();
 
+    // Mouse tracking
+    const mouse = { x: -1000, y: -1000 };
+    const handleMouseMove = (e: MouseEvent) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    };
+    const handleMouseOut = () => {
+      mouse.x = -1000;
+      mouse.y = -1000;
+    };
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseout", handleMouseOut);
+
     const particles: Particle[] = [];
-    const PARTICLE_COUNT = 30;
+    const PARTICLE_COUNT = 45;
 
     const createParticle = (x?: number, y?: number): Particle => ({
       x: x ?? Math.random() * canvas.width,
       y: y ?? Math.random() * canvas.height,
-      size: Math.random() * 2.5 + 0.5,
+      size: Math.random() * 2 + 0.3,
       speedX: (Math.random() - 0.5) * 0.6,
       speedY: (Math.random() - 0.5) * 0.6,
       opacity: Math.random() * 0.5 + 0.15,
@@ -63,6 +76,26 @@ export default function AnimatedBackground() {
         // Gentle float drift
         p.x += Math.sin(time * 0.005 + idx) * 0.15;
         p.y += Math.cos(time * 0.007 + idx) * 0.1;
+
+        // Mouse interaction (magnetic pull + draw line)
+        const dxMouse = p.x - mouse.x;
+        const dyMouse = p.y - mouse.y;
+        const distMouseSq = dxMouse * dxMouse + dyMouse * dyMouse;
+
+        if (distMouseSq < 22500) { // 150px radius squared
+          // Magnetic pull
+          p.x -= dxMouse * 0.015;
+          p.y -= dyMouse * 0.015;
+
+          // Draw line to mouse
+          const mouseLineOpacity = (1 - distMouseSq / 22500) * 0.8 * fadeOpacity;
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(mouse.x, mouse.y);
+          ctx.strokeStyle = `hsla(${p.hue}, 80%, 70%, ${mouseLineOpacity})`;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
 
         // Wrap around edges
         if (p.x < -10) p.x = canvas.width + 10;
@@ -130,6 +163,8 @@ export default function AnimatedBackground() {
     return () => {
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener("resize", resizeCanvas);
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseout", handleMouseOut);
     };
   }, []);
 
