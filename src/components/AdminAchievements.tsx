@@ -25,8 +25,9 @@ export default function AdminAchievements() {
             });
 
             if (insertError) throw insertError;
-        } catch (err) {
-            setError(err instanceof Error ? err.message : "Failed to add achievement");
+        } catch (err: any) {
+            console.error("Supabase insert error:", err);
+            setError(err?.message || err?.error_description || "Failed to add achievement");
         } finally {
             setIsSaving(false);
         }
@@ -41,8 +42,9 @@ export default function AdminAchievements() {
                 .eq("id", id);
 
             if (updateError) throw updateError;
-        } catch (err) {
-            setError(err instanceof Error ? err.message : "Failed to update achievement");
+        } catch (err: any) {
+            console.error("Supabase update error:", err);
+            setError(err?.message || err?.error_description || "Failed to update achievement");
         }
     };
 
@@ -56,8 +58,9 @@ export default function AdminAchievements() {
                 .eq("id", id);
 
             if (deleteError) throw deleteError;
-        } catch (err) {
-            setError(err instanceof Error ? err.message : "Failed to delete achievement");
+        } catch (err: any) {
+            console.error("Supabase delete error:", err);
+            setError(err?.message || err?.error_description || "Failed to delete achievement");
         }
     };
 
