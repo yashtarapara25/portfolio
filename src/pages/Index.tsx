@@ -3,6 +3,7 @@ import Hero from "@/components/Hero";
 import About from "@/components/About";
 import ProjectsGrid from "@/components/ProjectsGrid";
 import SkillsViz from "@/components/SkillsViz";
+import AchievementsViz from "@/components/AchievementsViz";
 import Timeline from "@/components/Timeline";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
@@ -18,6 +19,7 @@ const Index = () => {
         <About />
         <ProjectsGrid />
         <SkillsViz />
+        <AchievementsViz />
         <Timeline />
         <Contact />
       </main>

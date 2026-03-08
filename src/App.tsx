@@ -10,6 +10,7 @@ import AdminDashboard from "./components/AdminDashboard";
 import AdminProjects from "./components/AdminProjects";
 import AdminSkills from "./components/AdminSkills";
 import AdminEducation from "./components/AdminEducation";
+import AdminAchievements from "./components/AdminAchievements";
 import AdminSettings from "./components/AdminSettings";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminMessages from "./components/AdminMessages";
@@ -34,6 +35,7 @@ const App = () => (
           <Route path="/admin/projects" element={<ProtectedRoute><AdminProjects /></ProtectedRoute>} />
           <Route path="/admin/skills" element={<ProtectedRoute><AdminSkills /></ProtectedRoute>} />
           <Route path="/admin/education" element={<ProtectedRoute><AdminEducation /></ProtectedRoute>} />
+          <Route path="/admin/achievements" element={<ProtectedRoute><AdminAchievements /></ProtectedRoute>} />
           <Route path="/admin/settings" element={<ProtectedRoute><AdminSettings /></ProtectedRoute>} />
           <Route path="/admin/messages" element={<ProtectedRoute><AdminMessages /></ProtectedRoute>} />
           {/* Catch-all */}
