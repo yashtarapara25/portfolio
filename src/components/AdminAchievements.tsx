@@ -22,7 +22,6 @@ export default function AdminAchievements() {
         date: new Date().getFullYear().toString(),
         description: "",
         image_url: "",
-        credential_url: "",
         sort_order: 0,
     });
     const [submitting, setSubmitting] = useState(false);
@@ -83,7 +82,6 @@ export default function AdminAchievements() {
                 date: new Date().getFullYear().toString(),
                 description: "",
                 image_url: "",
-                credential_url: "",
                 sort_order: achievements.length + 1,
             });
             setEditingId(null);
@@ -104,7 +102,6 @@ export default function AdminAchievements() {
             date: achievement.date,
             description: achievement.description || "",
             image_url: achievement.image_url || "",
-            credential_url: achievement.credential_url || "",
             sort_order: achievement.sort_order || 0,
         });
         setEditingId(achievement.id);
@@ -207,7 +204,6 @@ export default function AdminAchievements() {
                                     date: new Date().getFullYear().toString(),
                                     description: "",
                                     image_url: "",
-                                    credential_url: "",
                                     sort_order: achievements.length + 1,
                                 });
                                 setEditingId(null);
@@ -299,10 +295,10 @@ export default function AdminAchievements() {
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-300 mb-2 flex items-center gap-2">
-                                        <ImageIcon size={14} /> Image / Badge URL (Optional)
+                                        <LinkIcon size={14} /> Certificate Link (Image or PDF URL)
                                     </label>
                                     <Input
                                         value={formData.image_url}
@@ -310,21 +306,7 @@ export default function AdminAchievements() {
                                             setFormData({ ...formData, image_url: e.target.value })
                                         }
                                         className="bg-gray-700 border-gray-600 focus:border-cyan-500 text-white"
-                                        placeholder="https://example.com/badge.png"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-300 mb-2 flex items-center gap-2">
-                                        <LinkIcon size={14} /> Credential URL (Optional)
-                                    </label>
-                                    <Input
-                                        value={formData.credential_url}
-                                        onChange={(e) =>
-                                            setFormData({ ...formData, credential_url: e.target.value })
-                                        }
-                                        className="bg-gray-700 border-gray-600 focus:border-cyan-500 text-white"
-                                        placeholder="https://verify.com/credential/123"
+                                        placeholder="https://drive.google.com/..."
                                     />
                                 </div>
                             </div>

@@ -29,10 +29,7 @@ export default function AchievementsViz() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {achievements.map((item, index) => (
-                        <motion.a
-                            href={item.credential_url || "#"}
-                            target={item.credential_url ? "_blank" : "_self"}
-                            rel="noopener noreferrer"
+                        <motion.div
                             key={item.id}
                             variants={fadeUp}
                             whileHover={{
@@ -42,7 +39,7 @@ export default function AchievementsViz() {
                                 borderColor: "rgba(249,115,22,0.3)"
                             }}
                             transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                            className={`glass-card rounded-2xl p-6 border border-white/5 transition-all duration-300 relative group/card flex flex-col h-full bg-[#0a0f1d]/80 ${!item.credential_url && "cursor-default"}`}
+                            className="glass-card rounded-2xl p-6 border border-white/5 transition-all duration-300 relative group/card flex flex-col h-full bg-[#0a0f1d]/80"
                         >
                             {/* Glowing ambient background on hover */}
                             <div className="absolute inset-0 bg-gradient-to-br from-orange-500/0 via-pink-500/0 to-orange-500/0 group-hover/card:from-orange-500/5 group-hover/card:to-pink-500/5 transition-all duration-500 rounded-2xl pointer-events-none" />
@@ -51,11 +48,6 @@ export default function AchievementsViz() {
                                 <div className="p-3 rounded-xl bg-gradient-to-br from-orange-500/10 to-pink-500/10 border border-orange-500/20 shadow-lg shadow-black/20 group-hover/card:border-orange-500/50 transition-colors">
                                     <Award size={24} className="text-orange-400" />
                                 </div>
-                                {item.credential_url && (
-                                    <div className="text-slate-500 group-hover/card:text-orange-400 transition-colors">
-                                        <ExternalLink size={20} />
-                                    </div>
-                                )}
                             </div>
 
                             <div className="flex-1">
@@ -72,15 +64,22 @@ export default function AchievementsViz() {
                                 )}
                             </div>
 
-                            <div className="mt-auto pt-4 border-t border-white/5 flex items-center justify-between">
-                                <span className="text-xs font-space font-medium text-slate-500 px-3 py-1 bg-white/5 rounded-full border border-white/5">
+                            <div className="mt-auto pt-4 border-t border-white/5 flex flex-wrap gap-4 items-center justify-between">
+                                <span className="text-xs font-space font-medium text-slate-500 px-3 py-1 bg-white/5 rounded-full border border-white/5 whitespace-nowrap">
                                     Issued {item.date}
                                 </span>
                                 {item.image_url && (
-                                    <img src={item.image_url} alt="Badge" className="h-8 w-8 object-contain opacity-80 group-hover/card:opacity-100 transition-opacity" />
+                                    <a
+                                        href={item.image_url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center gap-2 text-xs font-space font-bold px-4 py-2 bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-400 hover:to-pink-400 text-white rounded-full transition-all shadow-[0_0_15px_rgba(249,115,22,0.3)] hover:shadow-[0_0_25px_rgba(249,115,22,0.5)] whitespace-nowrap"
+                                    >
+                                        <ExternalLink size={14} /> Show Certificate
+                                    </a>
                                 )}
                             </div>
-                        </motion.a>
+                        </motion.div>
                     ))}
                 </div>
             </motion.div>
