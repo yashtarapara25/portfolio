@@ -3,13 +3,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Code2, Zap, Award } from "lucide-react";
 import { useSiteSettings } from "@/hooks/use-portfolio-data";
 
-// All nav items including Certificates (links to #achievements) before Contact
+// Nav order: About → Projects → Skills → Certificates → Education → Contact
 const allNavItems = [
   { label: "About",        href: "#about",        sectionId: "about" },
   { label: "Projects",     href: "#projects",     sectionId: "projects" },
   { label: "Skills",       href: "#skills",       sectionId: "skills" },
-  { label: "Education",    href: "#education",    sectionId: "education" },
   { label: "Certificates", href: "#achievements", sectionId: "achievements", icon: Award },
+  { label: "Education",    href: "#education",    sectionId: "education" },
   { label: "Contact",      href: "#contact",      sectionId: "contact" },
 ];
 
@@ -121,64 +121,30 @@ export default function Header() {
             const Icon = item.icon;
 
             return (
-              <motion.a
+              <a
                 key={item.href}
                 href={item.href}
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.07 }}
-                className="relative font-space"
+                className={`flex items-center gap-1.5 text-sm font-medium px-4 py-2 rounded-lg relative group font-space transition-colors duration-200 ${
+                  isActive
+                    ? "text-cyan-300 font-semibold"
+                    : "text-muted-foreground hover:text-cyan-300"
+                }`}
               >
-                <AnimatePresence mode="wait">
-                  {isActive ? (
-                    /* ── Active pill ── */
-                    <motion.span
-                      key="active"
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.9 }}
-                      transition={{ duration: 0.25 }}
-                      className="flex items-center gap-1.5 text-sm font-semibold px-4 py-2 rounded-lg relative overflow-hidden"
-                      style={{
-                        background:
-                          "linear-gradient(135deg, rgba(34,211,238,0.18), rgba(59,130,246,0.18))",
-                        border: "1px solid rgba(34,211,238,0.45)",
-                        color: "#67e8f9",
-                      }}
-                    >
-                      {Icon && <Icon size={13} className="text-cyan-300 shrink-0" />}
-                      {item.label}
-                      {/* Shimmer sweep */}
-                      <motion.span
-                        className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-400/20 to-transparent pointer-events-none"
-                        animate={{ x: ["-100%", "150%"] }}
-                        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                      />
-                    </motion.span>
-                  ) : (
-                    /* ── Normal state ── */
-                    <motion.span
-                      key="normal"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.2 }}
-                      className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-cyan-300 transition-colors duration-200 font-medium px-4 py-2 rounded-lg group"
-                      whileHover={{ backgroundColor: "rgba(34, 211, 238, 0.07)" } as any}
-                    >
-                      {Icon && <Icon size={13} className="opacity-60 group-hover:opacity-100 shrink-0" />}
-                      {item.label}
-                      {/* Animated underline */}
-                      <motion.span
-                        className="absolute bottom-1 left-4 right-4 h-px bg-gradient-to-r from-cyan-400 to-blue-500"
-                        initial={{ scaleX: 0, originX: "left" }}
-                        whileHover={{ scaleX: 1 }}
-                        transition={{ duration: 0.25 }}
-                      />
-                    </motion.span>
-                  )}
-                </AnimatePresence>
-              </motion.a>
+                {Icon && (
+                  <Icon
+                    size={13}
+                    className={`shrink-0 transition-opacity duration-200 ${
+                      isActive ? "opacity-100 text-cyan-300" : "opacity-50 group-hover:opacity-100"
+                    }`}
+                  />
+                )}
+                {item.label}
+                {/* Active underline indicator */}
+                <span
+                  className="absolute bottom-1 left-4 right-4 h-px rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 transition-all duration-300"
+                  style={{ opacity: isActive ? 1 : 0, transform: isActive ? "scaleX(1)" : "scaleX(0)", transformOrigin: "left" }}
+                />
+              </a>
             );
           })}
         </nav>
@@ -247,47 +213,27 @@ export default function Header() {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.06 }}
-                    className={`text-sm py-3 px-4 rounded-lg font-space flex items-center gap-2 relative overflow-hidden transition-all duration-300 ${
+                    className={`text-sm py-3 px-4 rounded-lg font-space flex items-center gap-2 transition-colors duration-200 ${
                       isActive
                         ? "text-cyan-300 font-semibold"
                         : "text-muted-foreground hover:text-cyan-300 hover:bg-cyan-500/10"
                     }`}
-                    style={
-                      isActive
-                        ? {
-                            background:
-                              "linear-gradient(135deg, rgba(34,211,238,0.14), rgba(59,130,246,0.14))",
-                            border: "1px solid rgba(34,211,238,0.35)",
-                          }
-                        : {}
-                    }
                   >
-                    {/* Active dot or icon */}
-                    {isActive ? (
-                      <>
-                        {Icon ? (
-                          <Icon size={14} className="text-cyan-300 shrink-0" />
-                        ) : (
-                          <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0" />
-                        )}
-                        {item.label}
-                        {/* Shimmer */}
-                        <motion.span
-                          className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-400/10 to-transparent pointer-events-none"
-                          animate={{ x: ["-100%", "150%"] }}
-                          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                        />
-                      </>
+                    {Icon ? (
+                      <Icon
+                        size={14}
+                        className={`shrink-0 ${
+                          isActive ? "text-cyan-300" : "opacity-50"
+                        }`}
+                      />
                     ) : (
-                      <>
-                        {Icon ? (
-                          <Icon size={14} className="opacity-50 shrink-0" />
-                        ) : (
-                          <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
-                        )}
-                        {item.label}
-                      </>
+                      <span
+                        className={`w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0 transition-opacity ${
+                          isActive ? "opacity-100" : "opacity-0"
+                        }`}
+                      />
                     )}
+                    {item.label}
                   </motion.a>
                 );
               })}
