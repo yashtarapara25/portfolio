@@ -22,7 +22,7 @@ export default function AchievementsViz() {
                         <span className="text-sm font-space font-medium tracking-wider uppercase">Certifications</span>
                     </div>
                     <h2 className="text-4xl md:text-5xl font-bold text-white font-orbitron mb-4">
-                        Licenses & <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Awards</span>
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Certificates</span>
                     </h2>
                     <div className="h-1 w-24 bg-gradient-to-r from-cyan-400 to-blue-500 mx-auto rounded-full" />
                 </motion.div>
