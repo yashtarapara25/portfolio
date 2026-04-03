@@ -14,42 +14,40 @@ const allNavItems = [
 ];
 
 /**
- * Scroll-spy — returns the sectionId whose top edge is currently
- * closest to 40% from the top of the viewport. One winner at a time.
+ * Scroll-spy — iterates sections in page order and picks the LAST one
+ * whose top (in document coordinates) is at or above the current scroll
+ * position + a small offset. Reliable for any section size.
  */
 function useActiveSection(ids: string[]) {
   const [active, setActive] = useState("");
 
   useEffect(() => {
     const getCurrent = () => {
-      const threshold = window.innerHeight * 0.4; // 40% down the viewport
+      // Offset: activate a section when it reaches 35% from the top of the viewport
+      const offset = window.innerHeight * 0.35;
+      const scrollY = window.scrollY + offset;
+
       let best = "";
-      let bestDist = Infinity;
-
-      ids.forEach((id) => {
+      for (const id of ids) {
         const el = document.getElementById(id);
-        if (!el) return;
-        const top = el.getBoundingClientRect().top;
-        // Only consider sections that have entered the viewport (top <= threshold)
-        if (top <= threshold) {
-          const dist = Math.abs(top - threshold);
-          if (dist < bestDist) {
-            bestDist = dist;
-            best = id;
-          }
+        if (!el) continue;
+        // Absolute top of section from document top
+        const sectionTop = el.getBoundingClientRect().top + window.scrollY;
+        if (sectionTop <= scrollY) {
+          best = id; // keep updating — last one wins
         }
-      });
-
+      }
       setActive(best);
     };
 
     window.addEventListener("scroll", getCurrent, { passive: true });
-    getCurrent(); // run once on mount
+    getCurrent(); // run on mount too
     return () => window.removeEventListener("scroll", getCurrent);
   }, [ids.join(",")]);
 
   return active;
 }
+
 
 export default function Header() {
   const { settings } = useSiteSettings();
