@@ -14,39 +14,38 @@ const allNavItems = [
 ];
 
 /**
- * Scroll-spy — returns the sectionId that is currently most visible on screen.
+ * Scroll-spy — returns the sectionId whose top edge is currently
+ * closest to 40% from the top of the viewport. One winner at a time.
  */
 function useActiveSection(ids: string[]) {
   const [active, setActive] = useState("");
 
   useEffect(() => {
-    const observers: IntersectionObserver[] = [];
+    const getCurrent = () => {
+      const threshold = window.innerHeight * 0.4; // 40% down the viewport
+      let best = "";
+      let bestDist = Infinity;
 
-    // Track ratio per section
-    const ratios: Record<string, number> = {};
+      ids.forEach((id) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const top = el.getBoundingClientRect().top;
+        // Only consider sections that have entered the viewport (top <= threshold)
+        if (top <= threshold) {
+          const dist = Math.abs(top - threshold);
+          if (dist < bestDist) {
+            bestDist = dist;
+            best = id;
+          }
+        }
+      });
 
-    ids.forEach((id) => {
-      const el = document.getElementById(id);
-      if (!el) return;
+      setActive(best);
+    };
 
-      const obs = new IntersectionObserver(
-        ([entry]) => {
-          ratios[id] = entry.intersectionRatio;
-          // Pick section with max visibility
-          const best = Object.entries(ratios).reduce(
-            (a, b) => (b[1] > a[1] ? b : a),
-            ["", 0]
-          );
-          if (best[1] > 0.1) setActive(best[0]);
-        },
-        { threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5] }
-      );
-
-      obs.observe(el);
-      observers.push(obs);
-    });
-
-    return () => observers.forEach((o) => o.disconnect());
+    window.addEventListener("scroll", getCurrent, { passive: true });
+    getCurrent(); // run once on mount
+    return () => window.removeEventListener("scroll", getCurrent);
   }, [ids.join(",")]);
 
   return active;
