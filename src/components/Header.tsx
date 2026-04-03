@@ -141,8 +141,9 @@ export default function Header() {
                 {item.label}
                 {/* Active underline indicator */}
                 <span
-                  className="absolute bottom-1 left-4 right-4 h-px rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 transition-all duration-300"
-                  style={{ opacity: isActive ? 1 : 0, transform: isActive ? "scaleX(1)" : "scaleX(0)", transformOrigin: "left" }}
+                  className={`absolute bottom-1 left-4 right-4 h-px rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 transition-all duration-300 origin-left ${
+                    isActive ? "opacity-100 scale-x-100" : "opacity-0 scale-x-0"
+                  }`}
                 />
               </a>
             );
