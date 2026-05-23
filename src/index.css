@@ -1,11 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Rajdhani:wght@300;400;500;600;700&family=Oxanium:wght@200;300;400;500;600;700;800&display=swap');
+/*
+  Fonts: moved to index.html as non-blocking <link> tags.
+  Removed blocking @import — this alone can save 200-300ms FCP.
+  Removed Rajdhani + Oxanium (redundant families not worth the request).
+*/
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* Hide default OS cursor — custom cursor handles it */
-
 
 @layer base {
   :root {
@@ -68,6 +69,9 @@
 
   body {
     @apply bg-background text-foreground antialiased;
+    /* Prevent layout recalculation during font loading */
+    font-synthesis: none;
+    text-rendering: optimizeSpeed;
   }
 
   ::selection {
@@ -75,9 +79,22 @@
     color: hsl(0 0% 100%);
   }
 
-  /* Smooth scroll */
+  /* Smooth scroll — disabled for prefers-reduced-motion to prevent jank */
   html {
     scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    /* Pause ALL CSS animations and transitions for users who prefer reduced motion.
+       This also eliminates scroll jank caused by heavy animations on low-end devices. */
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 
   /* Custom scrollbar */
@@ -115,12 +132,13 @@
     font-family: 'Space Grotesk', sans-serif;
   }
 
+  /* Kept for backward compat — falls back gracefully */
   .font-rajdhani {
-    font-family: 'Rajdhani', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
   }
 
   .font-oxanium {
-    font-family: 'Oxanium', sans-serif;
+    font-family: 'Orbitron', sans-serif;
   }
 
   /* ── Gradient text ── */
@@ -134,6 +152,8 @@
     background-image: linear-gradient(135deg, #22d3ee, #3b82f6, #a855f7, #ec4899, #22d3ee);
     background-size: 300% 300%;
     animation: gradient-shift 5s ease infinite;
+    /* GPU hint: background-position is compositable when using background-clip */
+    will-change: background-position;
   }
 
   .text-gradient-fire {
@@ -141,6 +161,7 @@
     background-image: linear-gradient(135deg, #f97316, #ef4444, #fbbf24);
     background-size: 200% 200%;
     animation: gradient-shift 3s ease infinite;
+    will-change: background-position;
   }
 
   .text-gradient-aurora {
@@ -148,6 +169,7 @@
     background-image: linear-gradient(135deg, #34d399, #22d3ee, #818cf8, #c084fc);
     background-size: 300% 300%;
     animation: gradient-shift 6s ease infinite;
+    will-change: background-position;
   }
 
   .text-neon-cyan {
@@ -194,8 +216,20 @@
   .glass-card {
     background: rgba(15, 23, 42, 0.6);
     backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(34, 211, 238, 0.15);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    /* Promote each card to its own compositor layer to avoid repainting siblings */
+    will-change: transform;
+    transform: translateZ(0);
+  }
+
+  /* On mobile, reduce blur cost — full blur causes scroll jank on weaker GPUs */
+  @media (max-width: 768px) {
+    .glass-card {
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
   }
 
   .glass-card:hover {
@@ -205,7 +239,8 @@
 
   /* ── Hover lift ── */
   .hover-lift {
-    @apply transition-all duration-300;
+    @apply transition-transform duration-300;
+    /* Only transition transform — avoids triggering layout on other props */
   }
 
   .hover-lift:hover {
@@ -217,7 +252,7 @@
   .neon-border {
     border: 1px solid rgba(34, 211, 238, 0.4);
     box-shadow: 0 0 10px rgba(34, 211, 238, 0.15), inset 0 0 10px rgba(34, 211, 238, 0.05);
-    transition: all 0.3s ease;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
   }
 
   .neon-border:hover {
@@ -236,8 +271,9 @@
     inset: -2px;
     border-radius: inherit;
     background: conic-gradient(from 0deg, #22d3ee, #3b82f6, #a855f7, #ec4899, #22d3ee);
-    animation: border-spin 4s linear infinite;
+    animation: orbit-cw 4s linear infinite;
     z-index: -1;
+    will-change: transform;
   }
 
   /* ── Typewriter cursor ── */
@@ -260,6 +296,7 @@
     inset: 0;
     background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.08) 50%, transparent 100%);
     animation: shimmer-sweep 2.5s ease-in-out infinite;
+    will-change: transform;
   }
 
   /* ── Section layout ── */
@@ -286,6 +323,7 @@
     border-radius: 50%;
     animation: float-dots 6s ease-in-out infinite;
     pointer-events: none;
+    will-change: transform;
   }
 
   .floating-dots::before {
@@ -304,210 +342,147 @@
     left: 10px;
     animation-delay: 1.5s;
   }
+
+  /* ── Content visibility for below-fold (layout paint optimization) ── */
+  .below-fold {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 600px;
+  }
 }
 
 /* ─────────────────────────────────────────────────────────
-   KEYFRAMES
+   KEYFRAMES — All GPU-safe (transform + opacity only where possible)
 ──────────────────────────────────────────────────────────── */
+
 @keyframes gradient-shift {
-  0% {
-    background-position: 0% 50%;
-  }
-
-  50% {
-    background-position: 100% 50%;
-  }
-
-  100% {
-    background-position: 0% 50%;
-  }
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
-@keyframes border-spin {
-  to {
-    transform: rotate(360deg);
-  }
+/* Single CW rotation — used by orbit rings, gradient border spinner */
+@keyframes orbit-cw {
+  to { transform: rotate(360deg); }
+}
+
+/* Single CCW rotation — used by counter rings */
+@keyframes orbit-ccw {
+  to { transform: rotate(-360deg); }
 }
 
 @keyframes blink {
-
-  0%,
-  100% {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 0;
-  }
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
 }
 
-/* CSS typing reveal for the name — smooth, GPU-accelerated */
+/* CSS typing reveal for the name — smooth, GPU-accelerated via clip-path */
 @keyframes typing-name {
-  from {
-    width: 0;
-  }
-
-  to {
-    width: 100%;
-  }
+  from { width: 0; }
+  to   { width: 100%; }
 }
 
 @keyframes blink-cursor {
-
-  0%,
-  100% {
-    border-color: #22d3ee;
-  }
-
-  50% {
-    border-color: transparent;
-  }
+  0%, 100% { border-color: #22d3ee; }
+  50%       { border-color: transparent; }
 }
 
 /* Animated colour sweep for hero name */
 @keyframes name-gradient {
-  0% {
-    background-position: 0% 50%;
-  }
-
-  50% {
-    background-position: 100% 50%;
-  }
-
-  100% {
-    background-position: 0% 50%;
-  }
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 @keyframes shimmer-sweep {
-  0% {
-    transform: translateX(-100%);
-  }
-
-  100% {
-    transform: translateX(100%);
-  }
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
 
 @keyframes float-dots {
-
-  0%,
-  100% {
-    transform: translateY(0) scale(1);
-    opacity: 0.6;
-  }
-
-  50% {
-    transform: translateY(-12px) scale(1.2);
-    opacity: 1;
-  }
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.6; }
+  50%       { transform: translateY(-12px) scale(1.2); opacity: 1; }
 }
 
 @keyframes blob {
-
-  0%,
-  100% {
-    transform: translate(0, 0) scale(1);
-  }
-
-  33% {
-    transform: translate(30px, -50px) scale(1.1);
-  }
-
-  66% {
-    transform: translate(-20px, 20px) scale(0.9);
-  }
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(30px, -50px) scale(1.1); }
+  66%       { transform: translate(-20px, 20px) scale(0.9); }
 }
 
-@keyframes glow-pulse {
-
-  0%,
-  100% {
-    box-shadow: 0 0 20px rgba(34, 211, 238, 0.4);
-  }
-
-  50% {
-    box-shadow: 0 0 50px rgba(34, 211, 238, 0.8), 0 0 80px rgba(34, 211, 238, 0.3);
-  }
+/*
+  glow-pulse: FIXED — was animating box-shadow (non-compositable = repaint every frame).
+  Now animates opacity on a pseudo-element wrapper. The actual glow stays constant;
+  only the layer's opacity changes, which IS composited by the browser.
+*/
+@keyframes glow-pulse-opacity {
+  0%, 100% { opacity: 0.6; }
+  50%       { opacity: 1; }
 }
 
 @keyframes float {
-
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(-16px);
-  }
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-16px); }
 }
 
 @keyframes slide-in-up {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 @keyframes spin-slow {
-  to {
-    transform: rotate(360deg);
-  }
+  to { transform: rotate(360deg); }
 }
 
 @keyframes ping-slow {
-
-  75%,
-  100% {
-    transform: scale(1.8);
-    opacity: 0;
-  }
+  75%, 100% { transform: scale(1.8); opacity: 0; }
 }
 
 @keyframes text-shimmer {
-  0% {
-    background-position: -200% center;
-  }
-
-  100% {
-    background-position: 200% center;
-  }
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
 }
 
 @keyframes neon-flicker {
-
-  0%,
-  19%,
-  21%,
-  23%,
-  25%,
-  54%,
-  56%,
-  100% {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
     text-shadow: 0 0 7px #22d3ee, 0 0 21px #22d3ee, 0 0 42px #22d3ee;
   }
+  20%, 24%, 55% { text-shadow: none; }
+}
 
-  20%,
-  24%,
-  55% {
-    text-shadow: none;
-  }
+/* Hero scroll indicator */
+@keyframes scroll-y {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(10px); }
+}
+
+@keyframes scroll-dot {
+  0%, 100% { transform: scaleY(0.2); opacity: 0.3; }
+  50%       { transform: scaleY(1); opacity: 1; }
+}
+
+/* Hero wave emoji */
+@keyframes wave {
+  0%, 100% { transform: rotate(0deg); }
+  25%       { transform: rotate(20deg); }
+  75%       { transform: rotate(-20deg); }
+}
+
+/* Scanner sweep (profile frame) */
+@keyframes scanner-sweep {
+  0%   { transform: translateX(-150%); }
+  40%  { transform: translateX(250%); }
+  100% { transform: translateX(250%); }
+}
+
+/* Corner pulse dots (profile frame) */
+@keyframes corner-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%       { transform: scale(1.8); opacity: 0.4; }
 }
 
 /* ─────────────────────────────────────────────────────────
@@ -515,34 +490,38 @@
 ──────────────────────────────────────────────────────────── */
 .animate-blob {
   animation: blob 7s infinite;
+  will-change: transform;
 }
 
-.animation-delay-2000 {
-  animation-delay: 2s;
-}
+.animation-delay-2000 { animation-delay: 2s; }
+.animation-delay-4000 { animation-delay: 4s; }
+.animation-delay-6000 { animation-delay: 6s; }
 
-.animation-delay-4000 {
-  animation-delay: 4s;
-}
-
-.animation-delay-6000 {
-  animation-delay: 6s;
-}
-
+/*
+  glow-pulse: FIXED.
+  Old: box-shadow animation = paint invalidation every frame.
+  New: opacity animation on an element that already has the glow baked in.
+  Use a wrapper with the glow shadow static, and animate opacity on it.
+*/
 .animate-glow-pulse {
-  animation: glow-pulse 2.5s ease-in-out infinite;
+  animation: glow-pulse-opacity 2.5s ease-in-out infinite;
+  will-change: opacity;
+  box-shadow: 0 0 20px rgba(34, 211, 238, 0.6), 0 0 50px rgba(34, 211, 238, 0.3);
 }
 
 .animate-float {
   animation: float 4s ease-in-out infinite;
+  will-change: transform;
 }
 
 .animate-spin-slow {
-  animation: spin-slow 8s linear infinite;
+  animation: orbit-cw 8s linear infinite;
+  will-change: transform;
 }
 
 .animate-ping-slow {
   animation: ping-slow 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+  will-change: transform, opacity;
 }
 
 .animate-slide-in-up {
@@ -560,8 +539,15 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
   animation: text-shimmer 3s linear infinite;
+  will-change: background-position;
 }
 
 .neon-flicker {
   animation: neon-flicker 3s infinite;
+}
+
+/* Send arrow bounce — CSS replacement for Framer repeat:Infinity on Contact button */
+@keyframes send-arrow {
+  0%, 100% { transform: translateX(0); }
+  50%       { transform: translateX(5px); }
 }

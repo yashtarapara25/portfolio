@@ -248,12 +248,9 @@ export default function Contact() {
                   ) : (
                     <>
                       Send Message
-                      <motion.span
-                        animate={{ x: [0, 5, 0] }}
-                        transition={{ repeat: Infinity, duration: 1.5 }}
-                      >
+                      <span className="animate-[send-arrow_1.5s_ease-in-out_infinite]">
                         <Send size={16} />
-                      </motion.span>
+                      </span>
                     </>
                   )}
                 </span>
