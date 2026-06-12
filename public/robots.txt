@@ -12,3 +12,6 @@ Allow: /
 
 User-agent: *
 Allow: /
+
+Sitemap: https://tarapara-yash-portfolio.vercel.app/sitemap.xml
+
