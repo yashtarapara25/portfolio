@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { staggerContainer, fadeUp } from "@/lib/motions";
 import { useEducation } from "@/hooks/use-portfolio-data";
 import { BookOpen, GraduationCap, Cpu, Shield, Terminal } from "lucide-react";
@@ -215,85 +215,76 @@ export default function Timeline() {
                     <div className="absolute bottom-4 left-4 w-4 h-4 border-b-2 border-l-2 border-[#00FF88]/30 pointer-events-none" />
                     <div className="absolute bottom-4 right-4 w-4 h-4 border-b-2 border-r-2 border-[#00FF88]/30 pointer-events-none" />
 
-                    <AnimatePresence mode="wait">
-                      {activeEdu && (
-                        <motion.div
-                          key={activeIndex}
-                          initial={{ opacity: 0, y: 12 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -12 }}
-                          transition={{ duration: 0.35, ease: [0.2, 0.9, 0.3, 1] }}
-                          className="flex flex-col h-full justify-between gap-6"
-                        >
-                          <div>
-                            {/* Header log indicator */}
-                            <div className="flex justify-between items-center border-b border-[rgba(255,255,255,0.05)] pb-4 mb-6">
-                              <div className="flex items-center gap-2">
-                                <span className="text-[#00FF88] opacity-80 animate-pulse text-[8px]">●</span>
-                                <span className="text-[10px] font-mono text-zinc-400 uppercase tracking-widest">
-                                  SYS_LOG // ACAD_NODE_0{activeIndex + 1}
-                                </span>
-                              </div>
-                              <span className="text-[8px] font-mono text-white border border-[#00FF88]/30 px-2 py-0.5 bg-[#00FF88]/5 rounded-md uppercase font-semibold flex items-center gap-1.5 shadow-[0_0_8px_rgba(0,255,136,0.1)]">
-                                <Shield size={10} className="text-[#00FF88]" />
-                                VERIFIED
+                    {activeEdu && (
+                      <div className="flex flex-col h-full justify-between gap-6">
+                        <div>
+                          {/* Header log indicator */}
+                          <div className="flex justify-between items-center border-b border-[rgba(255,255,255,0.05)] pb-4 mb-6">
+                            <div className="flex items-center gap-2">
+                              <span className="text-[#00FF88] opacity-80 animate-pulse text-[8px]">●</span>
+                              <span className="text-[10px] font-mono text-zinc-400 uppercase tracking-widest">
+                                SYS_LOG // ACAD_NODE_0{activeIndex + 1}
                               </span>
                             </div>
+                            <span className="text-[8px] font-mono text-white border border-[#00FF88]/30 px-2 py-0.5 bg-[#00FF88]/5 rounded-md uppercase font-semibold flex items-center gap-1.5 shadow-[0_0_8px_rgba(0,255,136,0.1)]">
+                              <Shield size={10} className="text-[#00FF88]" />
+                              VERIFIED
+                            </span>
+                          </div>
 
-                            {/* Institution & Degree */}
-                            <div className="flex items-start gap-4 mb-4">
-                              <div className="w-12 h-12 rounded-xl bg-[#00FF88]/5 border border-[#00FF88]/20 text-[#00FF88] flex items-center justify-center flex-shrink-0 shadow-[0_0_15px_rgba(0,255,136,0.06)]">
-                                <GraduationCap size={22} />
-                              </div>
-                              <div className="min-w-0">
-                                <h3 className="text-xl sm:text-2xl font-extrabold font-space text-white leading-snug">
-                                  {activeEdu.institution}
-                                </h3>
-                                <p className="text-[11px] sm:text-xs font-mono text-[#00FF88] uppercase tracking-wider font-bold mt-1.5">
-                                  {activeEdu.degree}
-                                </p>
-                              </div>
+                          {/* Institution & Degree */}
+                          <div className="flex items-start gap-4 mb-4">
+                            <div className="w-12 h-12 rounded-xl bg-[#00FF88]/5 border border-[#00FF88]/20 text-[#00FF88] flex items-center justify-center flex-shrink-0 shadow-[0_0_15px_rgba(0,255,136,0.06)]">
+                              <GraduationCap size={22} />
                             </div>
-
-                            {/* Summary description */}
-                            <div className="relative text-xs sm:text-sm text-zinc-300 leading-relaxed font-space bg-[#050816]/30 p-5 rounded-xl border border-[rgba(255,255,255,0.04)] my-5">
-                              <div className="absolute top-0 left-4 h-px w-12 bg-[#00FF88]" />
-                              {activeEdu.summary}
+                            <div className="min-w-0">
+                              <h3 className="text-xl sm:text-2xl font-extrabold font-space text-white leading-snug">
+                                {activeEdu.institution}
+                              </h3>
+                              <p className="text-[11px] sm:text-xs font-mono text-[#00FF88] uppercase tracking-wider font-bold mt-1.5">
+                                {activeEdu.degree}
+                              </p>
                             </div>
                           </div>
 
-                          {/* Telemetry Logs Footer */}
-                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-[9px] font-mono text-zinc-500 border-t border-[rgba(255,255,255,0.05)] pt-6 mt-auto">
-                            <div className="space-y-1">
-                              <p className="uppercase text-zinc-400 font-semibold flex items-center gap-1">
-                                <Terminal size={10} className="text-[#00FF88]" />
-                                DURATION
-                              </p>
-                              <p className="text-xs font-bold text-[#00FF88]">{activeEdu.year}</p>
-                            </div>
-                            <div className="space-y-1">
-                              <p className="uppercase text-zinc-400 font-semibold flex items-center gap-1">
-                                <Cpu size={10} className="text-[#00FF88]" />
-                                REGISTRY
-                              </p>
-                              <p className="text-[#00FF88]">ACTIVE // ONLINE</p>
-                            </div>
-                            <div className="space-y-1">
-                              <p className="uppercase text-zinc-400 font-semibold flex items-center gap-1 text-[8px]">
-                                ADDR_HEX
-                              </p>
-                              <p className="text-zinc-300">0xAC_N0{activeIndex + 1}</p>
-                            </div>
-                            <div className="space-y-1">
-                              <p className="uppercase text-zinc-400 font-semibold flex items-center gap-1 text-[8px]">
-                                CONTEXT
-                              </p>
-                              <p className="text-[#00FF88]">SECURE</p>
-                            </div>
+                          {/* Summary description */}
+                          <div className="relative text-xs sm:text-sm text-zinc-300 leading-relaxed font-space bg-[#050816]/30 p-5 rounded-xl border border-[rgba(255,255,255,0.04)] my-5">
+                            <div className="absolute top-0 left-4 h-px w-12 bg-[#00FF88]" />
+                            {activeEdu.summary}
                           </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
+                        </div>
+
+                        {/* Telemetry Logs Footer */}
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-[9px] font-mono text-zinc-500 border-t border-[rgba(255,255,255,0.05)] pt-6 mt-auto">
+                          <div className="space-y-1">
+                            <p className="uppercase text-zinc-400 font-semibold flex items-center gap-1">
+                              <Terminal size={10} className="text-[#00FF88]" />
+                              DURATION
+                            </p>
+                            <p className="text-xs font-bold text-[#00FF88]">{activeEdu.year}</p>
+                          </div>
+                          <div className="space-y-1">
+                            <p className="uppercase text-zinc-400 font-semibold flex items-center gap-1">
+                              <Cpu size={10} className="text-[#00FF88]" />
+                              REGISTRY
+                            </p>
+                            <p className="text-[#00FF88]">ACTIVE // ONLINE</p>
+                          </div>
+                          <div className="space-y-1">
+                            <p className="uppercase text-zinc-400 font-semibold flex items-center gap-1 text-[8px]">
+                              ADDR_HEX
+                            </p>
+                            <p className="text-zinc-300">0xAC_N0{activeIndex + 1}</p>
+                          </div>
+                          <div className="space-y-1">
+                            <p className="uppercase text-zinc-400 font-semibold flex items-center gap-1 text-[8px]">
+                              CONTEXT
+                            </p>
+                            <p className="text-[#00FF88]">SECURE</p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
 
