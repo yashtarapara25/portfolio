@@ -124,7 +124,12 @@ export default function ProjectsGrid() {
               <p className="text-zinc-500 font-mono text-sm">NO PROJECTS REGISTERS IN SYSTEM</p>
             </div>
           ) : (
-            <motion.div variants={fadeUp} className="w-full">
+            <motion.div
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              className="w-full"
+            >
               {/* Slider Card */}
               <div className="relative rounded-2xl border border-[rgba(255,255,255,0.07)] bg-[#0b1120] p-5 md:p-6 flex flex-col gap-6 overflow-hidden">
                 {/* Back backing glow */}
