@@ -131,20 +131,24 @@ export default function AdminEducation() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800">
-      <nav className="bg-gray-900 border-b border-gray-700 p-4">
+    <div className="min-h-screen bg-[#050816] relative overflow-hidden text-zinc-300 font-sans pb-12">
+      {/* Background decoration */}
+      <div className="absolute -left-12 -top-12 w-48 h-48 rounded-full bg-[#00FF88]/5 blur-3xl pointer-events-none" />
+      <div className="absolute inset-0 bg-grid-pattern opacity-5 pointer-events-none" />
+
+      <nav className="bg-[#050816]/90 backdrop-blur-xl border-b border-[#00FF88]/15 p-4 relative z-20">
         <div className="container max-w-6xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-4">
             <Button
               onClick={() => navigate("/admin/dashboard")}
-              variant="ghost"
+              className="bg-transparent border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700 hover:bg-white/5 font-mono text-xs uppercase"
               size="sm"
             >
-              <ArrowLeft size={16} className="mr-2" />
+              <ArrowLeft size={14} className="mr-1.5" />
               Back
             </Button>
-            <h1 className="text-2xl font-bold text-cyan-400">
-              Manage Education
+            <h1 className="text-xl font-bold font-space text-white tracking-wide">
+              Manage <span className="text-[#00FF88] text-gradient">Education</span>
             </h1>
           </div>
           <Button
@@ -159,39 +163,46 @@ export default function AdminEducation() {
               setEditingId(null);
               setShowForm(true);
             }}
-            className="gap-2 bg-cyan-600 hover:bg-cyan-700"
+            className="gap-1.5 bg-[#00FF88]/10 border border-[#00FF88]/30 hover:border-[#00FF88] text-[#00FF88] hover:bg-[#00FF88]/20 transition-all font-mono text-xs uppercase font-bold tracking-wider"
           >
-            <Plus size={16} />
+            <Plus size={14} />
             Add Education
           </Button>
         </div>
       </nav>
 
-      <div className="container max-w-6xl mx-auto py-8 px-4">
+      <div className="container max-w-6xl mx-auto py-8 px-4 relative z-10">
         {showForm && (
-          <div className="bg-gray-800 rounded-lg border border-gray-700 p-6 mb-8">
-            <h2 className="text-2xl font-bold text-white mb-4">
-              {editingId ? "Edit Education" : "New Education"}
+          <div className="bg-[#0b1120]/45 backdrop-blur-xl border border-[rgba(255,255,255,0.07)] rounded-2xl p-6 mb-8 relative overflow-hidden shadow-2xl">
+            {/* Corner Brackets */}
+            <div className="absolute top-3 left-3 w-3 h-3 border-t-2 border-l-2 border-[#00FF88]/20 pointer-events-none" />
+            <div className="absolute top-3 right-3 w-3 h-3 border-t-2 border-r-2 border-[#00FF88]/20 pointer-events-none" />
+            <div className="absolute bottom-3 left-3 w-3 h-3 border-b-2 border-l-2 border-[#00FF88]/20 pointer-events-none" />
+            <div className="absolute bottom-3 right-3 w-3 h-3 border-b-2 border-r-2 border-[#00FF88]/20 pointer-events-none" />
+
+            <h2 className="text-xl font-bold font-space text-white mb-6 flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#00FF88]" />
+              {editingId ? "Modify Education Entry" : "Register New Academic Node"}
             </h2>
 
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Year
+                  <label className="block text-xs font-mono uppercase tracking-wider text-zinc-400 mb-2">
+                    Year Range
                   </label>
                   <Input
                     value={formData.year}
                     onChange={(e) =>
                       setFormData({ ...formData, year: e.target.value })
                     }
-                    className="bg-gray-700 border-gray-600"
+                    className="bg-[#050816]/50 border-[rgba(255,255,255,0.1)] focus:border-[#00FF88]/40 focus:ring-1 focus:ring-[#00FF88]/20 text-zinc-300 font-mono text-sm"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className="block text-xs font-mono uppercase tracking-wider text-zinc-400 mb-2">
                     Institution
                   </label>
                   <Input
@@ -199,14 +210,14 @@ export default function AdminEducation() {
                     onChange={(e) =>
                       setFormData({ ...formData, institution: e.target.value })
                     }
-                    className="bg-gray-700 border-gray-600"
+                    className="bg-[#050816]/50 border-[rgba(255,255,255,0.1)] focus:border-[#00FF88]/40 focus:ring-1 focus:ring-[#00FF88]/20 text-zinc-300 font-mono text-sm"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Order <span className="text-gray-500 font-normal">(lower = first)</span>
+                  <label className="block text-xs font-mono uppercase tracking-wider text-zinc-400 mb-2">
+                    Order index <span className="text-zinc-600">(lower = first)</span>
                   </label>
                   <Input
                     type="number"
@@ -214,47 +225,47 @@ export default function AdminEducation() {
                     onChange={(e) =>
                       setFormData({ ...formData, sort_order: parseInt(e.target.value) || 0 })
                     }
-                    className="bg-gray-700 border-gray-600"
+                    className="bg-[#050816]/50 border-[rgba(255,255,255,0.1)] focus:border-[#00FF88]/40 focus:ring-1 focus:ring-[#00FF88]/20 text-zinc-300 font-mono text-sm"
                     placeholder="0"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Degree
+                <label className="block text-xs font-mono uppercase tracking-wider text-zinc-400 mb-2">
+                  Degree / Qualification
                 </label>
                 <Input
                   value={formData.degree}
                   onChange={(e) =>
                     setFormData({ ...formData, degree: e.target.value })
                   }
-                  className="bg-gray-700 border-gray-600"
-                  placeholder="B.S. Computer Science"
+                  className="bg-[#050816]/50 border-[rgba(255,255,255,0.1)] focus:border-[#00FF88]/40 focus:ring-1 focus:ring-[#00FF88]/20 text-zinc-300 font-mono text-sm"
+                  placeholder="e.g. Bachelor of Technology in Computer Engineering"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Summary
+                <label className="block text-xs font-mono uppercase tracking-wider text-zinc-400 mb-2">
+                  Dossier Summary
                 </label>
                 <Textarea
                   value={formData.summary}
                   onChange={(e) =>
                     setFormData({ ...formData, summary: e.target.value })
                   }
-                  className="bg-gray-700 border-gray-600"
-                  placeholder="Brief description of your education..."
+                  className="bg-[#050816]/50 border-[rgba(255,255,255,0.1)] focus:border-[#00FF88]/40 focus:ring-1 focus:ring-[#00FF88]/20 text-zinc-300 font-mono text-sm min-h-[80px]"
+                  placeholder="Brief description of your academic details, scores, projects..."
                 />
               </div>
 
-              <div className="flex gap-2">
+              <div className="flex gap-3 pt-4">
                 <Button
                   type="submit"
                   disabled={submitting}
-                  className="bg-cyan-600 hover:bg-cyan-700"
+                  className="bg-[#00FF88]/10 border border-[#00FF88]/30 hover:border-[#00FF88] text-[#00FF88] hover:bg-[#00FF88]/20 transition-all font-mono text-xs uppercase font-bold tracking-wider"
                 >
-                  {submitting ? "Saving..." : "Save Education"}
+                  {submitting ? "Processing..." : "Commit Entry"}
                 </Button>
                 <Button
                   type="button"
@@ -262,7 +273,7 @@ export default function AdminEducation() {
                     setShowForm(false);
                     setEditingId(null);
                   }}
-                  variant="outline"
+                  className="bg-transparent border border-zinc-800 text-zinc-500 hover:text-zinc-300 hover:border-zinc-700 hover:bg-white/5 font-mono text-xs uppercase"
                 >
                   Cancel
                 </Button>
@@ -272,59 +283,70 @@ export default function AdminEducation() {
         )}
 
         <div className="space-y-4">
-          <h2 className="text-2xl font-bold text-white">
-            {loadingEducations
-              ? "Loading..."
-              : `Education Entries (${educations.length})`}
-          </h2>
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-1.5 h-1.5 rounded-full bg-[#00FF88]" />
+            <h2 className="text-xl font-bold font-space text-white tracking-wide">
+              {loadingEducations
+                ? "Scanning Registry..."
+                : `Academic Registry Entries (${educations.length})`}
+            </h2>
+          </div>
 
-          {educations.map((education) => (
-            <div
-              key={education.id}
-              className="bg-gray-800 rounded-lg border border-gray-700 p-4 flex justify-between items-start"
-            >
-              <div className="flex-1">
-                <div className="flex items-center gap-2">
-                  <h3 className="text-xl font-bold text-white">
-                    {education.degree}
-                  </h3>
-                  <span className="text-sm bg-cyan-600/20 text-cyan-400 px-2 py-1 rounded">
-                    {education.year}
-                  </span>
-                  {education.sort_order !== null && (
-                    <span className="text-xs bg-gray-700 text-gray-400 px-2 py-1 rounded">
-                      Order: {education.sort_order}
+          <div className="space-y-4">
+            {educations.map((education) => (
+              <div
+                key={education.id}
+                className="bg-[#0b1120]/45 backdrop-blur-xl border border-[rgba(255,255,255,0.06)] hover:border-[#00FF88]/20 rounded-xl p-5 transition-all duration-300 relative overflow-hidden flex flex-col md:flex-row justify-between items-start gap-4"
+              >
+                {/* Accent Brackets */}
+                <div className="absolute top-2 left-2 w-2 h-2 border-t border-l border-[#00FF88]/20 pointer-events-none" />
+                <div className="absolute top-2 right-2 w-2 h-2 border-t border-r border-[#00FF88]/20 pointer-events-none" />
+                <div className="absolute bottom-2 left-2 w-2 h-2 border-b border-l border-[#00FF88]/20 pointer-events-none" />
+                <div className="absolute bottom-2 right-2 w-2 h-2 border-b border-r border-[#00FF88]/20 pointer-events-none" />
+
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-2.5">
+                    <h3 className="text-lg font-bold text-white font-space leading-tight">
+                      {education.degree || "Degree Unlisted"}
+                    </h3>
+                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded border border-[#00FF88]/20 bg-[#00FF88]/5 text-white">
+                      {education.year}
                     </span>
+                    {education.sort_order !== null && (
+                      <span className="text-[9px] font-mono text-zinc-500 border border-zinc-800 px-1.5 py-0.5 rounded">
+                        ORDER: {education.sort_order}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[#00FF88] text-xs font-mono font-semibold uppercase tracking-wider mt-1.5">
+                    {education.institution}
+                  </p>
+                  {education.summary && (
+                    <p className="text-sm text-zinc-400 mt-2.5 leading-relaxed bg-[#050816]/30 p-3 rounded-lg border border-[rgba(255,255,255,0.03)] font-sans">
+                      {education.summary}
+                    </p>
                   )}
                 </div>
-                <p className="text-gray-400 mt-1">{education.institution}</p>
-                {education.summary && (
-                  <p className="text-gray-300 mt-2">{education.summary}</p>
-                )}
-              </div>
 
-              <div className="flex gap-2">
-                <Button
-                  onClick={() => handleEdit(education)}
-                  variant="outline"
-                  size="sm"
-                  className="gap-2"
-                >
-                  <Edit size={16} />
-                  Edit
-                </Button>
-                <Button
-                  onClick={() => handleDelete(education.id)}
-                  variant="outline"
-                  size="sm"
-                  className="gap-2 text-red-400 hover:text-red-400"
-                >
-                  <Delete size={16} />
-                  Delete
-                </Button>
+                <div className="flex gap-2 shrink-0 self-end md:self-start">
+                  <Button
+                    onClick={() => handleEdit(education)}
+                    className="bg-transparent border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700 hover:bg-white/5 p-2 h-8 w-8"
+                    size="sm"
+                  >
+                    <Edit size={13} />
+                  </Button>
+                  <Button
+                    onClick={() => handleDelete(education.id)}
+                    className="bg-transparent border border-red-500/20 text-red-400 hover:text-white hover:border-red-500 hover:bg-red-500/10 p-2 h-8 w-8"
+                    size="sm"
+                  >
+                    <Delete size={13} />
+                  </Button>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </div>

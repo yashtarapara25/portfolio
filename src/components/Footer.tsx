@@ -1,188 +1,128 @@
 import { motion } from "framer-motion";
 import { useSiteSettings } from "@/hooks/use-portfolio-data";
-import { Github, Linkedin, Code2, Zap } from "lucide-react";
-
-// MonkeyType — attractive monkey face icon, stroke-only, matches lucide-react style
-function MonkeyTypeIcon({ size = 26 }: { size?: number }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      {/* Left ear */}
-      <circle cx="4.5" cy="11" r="2.2" />
-      {/* Right ear */}
-      <circle cx="19.5" cy="11" r="2.2" />
-      {/* Inner left ear */}
-      <circle cx="4.5" cy="11" r="0.9" strokeWidth="1" />
-      {/* Inner right ear */}
-      <circle cx="19.5" cy="11" r="0.9" strokeWidth="1" />
-      {/* Head */}
-      <circle cx="12" cy="11.5" r="7" />
-      {/* Muzzle */}
-      <ellipse cx="12" cy="14.2" rx="3" ry="2" />
-      {/* Left eye */}
-      <circle cx="9.5" cy="10" r="1" fill="currentColor" stroke="none" />
-      {/* Right eye */}
-      <circle cx="14.5" cy="10" r="1" fill="currentColor" stroke="none" />
-      {/* Nose */}
-      <path d="M11.2 13.5 Q12 14 12.8 13.5" strokeWidth="1.2" />
-      {/* Smile */}
-      <path d="M10 15.2 Q12 16.6 14 15.2" strokeWidth="1.2" />
-    </svg>
-  );
-}
+import { about } from "@/lib/data";
+import { Github, Linkedin, Code, Zap, Keyboard } from "lucide-react";
 
 export default function Footer() {
   const { settings } = useSiteSettings();
 
   const socialLinks = [
-    { icon: Github, href: settings.github_url, label: "GitHub", color: "hover:text-white" },
-    { icon: Linkedin, href: settings.linkedin_url, label: "LinkedIn", color: "hover:text-blue-400" },
-    { icon: MonkeyTypeIcon, href: settings.monkeytype_url, label: "MonkeyType", color: "hover:text-yellow-400" },
+    { icon: Github, href: settings.github_url || about.github, label: "GitHub" },
+    { icon: Linkedin, href: settings.linkedin_url || about.linkedin, label: "LinkedIn" },
+    { icon: Keyboard, href: settings.monkeytype_url || about.monkeytype, label: "MonkeyType" },
   ].filter((link) => link.href);
 
   return (
-    <footer className="relative overflow-hidden">
-      {/* Gradient divider */}
-      <div className="h-px bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
+    <footer className="relative overflow-hidden bg-[#060913] border-t border-[rgba(255,255,255,0.06)]">
+      {/* Laser line divider */}
+      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#00FF88]/40 to-transparent z-10" />
 
-      {/* Subtle background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-slate-900/40 to-slate-950/80 pointer-events-none" />
-
-      {/* Decorative blob */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-96 h-32 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none" />
-
-      <div className="relative z-10 container max-w-6xl mx-auto px-6 py-10">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-
-          {/* Left: Branding */}
+      <div className="relative z-10 container max-w-6xl mx-auto px-6 py-12">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+          
+          {/* Left: Cyber Logo & Copyright */}
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="flex flex-col items-center md:items-start gap-2"
+            className="flex flex-col items-center md:items-start gap-2.5"
           >
-            {/* Logo row */}
-            <div className="flex items-center gap-2 mb-1">
-              <motion.div
-                className="w-7 h-7 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center"
-                whileHover={{ rotate: 180 }}
-                transition={{ duration: 0.5 }}
-              >
-                <Code2 size={14} className="text-white" />
-              </motion.div>
-              <span className="font-orbitron text-sm font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
-                {settings.site_title || "Portfolio"}
+            {/* Logo */}
+            <div className="flex items-center gap-2 mb-0.5">
+              <div className="w-6 h-6 rounded bg-[#00FF88]/10 border border-[#00FF88]/30 flex items-center justify-center text-[#00FF88] shadow-[0_0_10px_rgba(0,255,136,0.05)]">
+                <Code size={11} className="stroke-[2.5]" />
+              </div>
+              <span className="font-space text-sm font-bold text-white tracking-tight">
+                {settings.site_title || "Tarapara Yash Portfolio"}
               </span>
             </div>
 
-            <p className="text-xs text-muted-foreground font-space flex items-center gap-1.5">
+            <p className="text-[11px] font-mono text-zinc-500 flex items-center gap-1.5 uppercase tracking-wider">
               © {new Date().getFullYear()} · Tarapara Yash ·
               <motion.span
                 whileHover={{ rotate: 180 }}
                 transition={{ duration: 0.5 }}
-                className="text-cyan-400"
+                className="text-[#00FF88]"
               >
-                <Code2 size={12} />
+                <Code size={11} />
               </motion.span>
-              All rights reserved
+              All systems nominal
             </p>
           </motion.div>
 
-          {/* Center: Tech stack */}
+          {/* Center: System Built-With HUD Badges */}
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="flex items-center gap-2 text-xs text-muted-foreground font-space"
+            className="flex flex-wrap items-center justify-center gap-2 font-mono text-[9px]"
           >
             {[
-              { label: "React", color: "text-cyan-400" },
-              { label: "TypeScript", color: "text-blue-400" },
-              { label: "Framer Motion", color: "text-purple-400" },
-              { label: "Tailwind", color: "text-teal-400" },
-            ].map(({ label, color }, i) => (
-              <span key={label} className="flex items-center gap-2">
-                {i > 0 && <span className="text-muted-foreground/30">·</span>}
-                <motion.span
-                  className={`${color} font-semibold`}
-                  whileHover={{ scale: 1.15 }}
-                  transition={{ type: "spring", stiffness: 400 }}
-                >
-                  {label}
-                </motion.span>
+              { label: "REACT", color: "text-[#22d3ee] border-[#22d3ee]/20 bg-[#22d3ee]/5" },
+              { label: "TYPESCRIPT", color: "text-[#3b82f6] border-[#3b82f6]/20 bg-[#3b82f6]/5" },
+              { label: "FRAMER MOTION", color: "text-[#a855f7] border-[#a855f7]/20 bg-[#a855f7]/5" },
+              { label: "TAILWIND CSS", color: "text-[#00FF88] border-[#00FF88]/20 bg-[#00FF88]/5" },
+            ].map(({ label, color }) => (
+              <span
+                key={label}
+                className={`px-2 py-0.5 rounded border font-semibold select-none ${color}`}
+              >
+                {label}
               </span>
             ))}
           </motion.div>
 
-          {/* Right: Social links */}
+          {/* Right: High-tech Social Links */}
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="flex items-center gap-4"
+            className="flex items-center gap-3.5"
           >
-            {socialLinks.map(({ icon: Icon, href, label, color }, index) => (
+            {socialLinks.map(({ icon: Icon, href, label }, index) => (
               <motion.a
                 key={label}
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={label}
-                initial={{ opacity: 0, scale: 0 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1, type: "spring", stiffness: 300 }}
-                whileHover={{ scale: 1.25, y: -3 }}
-                whileTap={{ scale: 0.9 }}
-                className={`text-muted-foreground ${color} transition-all duration-200 relative group`}
+                whileHover={{ scale: 1.08, y: -4 }}
+                whileTap={{ scale: 0.95 }}
+                className="w-10 h-10 rounded-xl border border-zinc-800 bg-[#0B1220]/45 backdrop-blur-md flex items-center justify-center text-zinc-400 hover:text-[#00FF88] hover:border-[#00FF88]/50 hover:bg-[#00FF88]/5 hover:shadow-[0_0_20px_rgba(0,255,136,0.25)] transition-all duration-300 group relative"
               >
-                <Icon size={20} />
+                <Icon size={18} className="transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6 text-zinc-400 group-hover:text-[#00FF88]" />
 
-                {/* Ripple ring */}
+                {/* Pulsing ripple ring */}
                 <motion.div
-                  className="absolute inset-0 rounded-full border border-cyan-400"
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  whileHover={{ scale: 1.8, opacity: 0 }}
-                  transition={{ duration: 0.5 }}
+                  className="absolute inset-0 rounded-xl border border-[#00FF88] pointer-events-none"
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  whileHover={{ scale: 1.3, opacity: [0, 0.4, 0] }}
+                  transition={{ duration: 0.6, ease: "easeOut" }}
                 />
 
-                {/* Tooltip */}
-                <motion.span
-                  initial={{ opacity: 0, y: 8 }}
-                  whileHover={{ opacity: 1, y: -28 }}
-                  transition={{ duration: 0.2 }}
-                  className="absolute whitespace-nowrap text-xs font-semibold px-2 py-1 rounded-md bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 pointer-events-none left-1/2 -translate-x-1/2"
-                >
+                {/* Cyberpunk tooltip */}
+                <span className="absolute opacity-0 group-hover:opacity-100 translate-y-2 group-hover:-translate-y-7 transition-all duration-300 whitespace-nowrap text-[10px] font-mono font-semibold px-2.5 py-1 rounded bg-[#0B1220]/95 border border-[#00FF88]/30 text-[#00FF88] shadow-[0_0_15px_rgba(0,255,136,0.15)] pointer-events-none left-1/2 -translate-x-1/2 z-20">
                   {label}
-                </motion.span>
+                </span>
               </motion.a>
             ))}
           </motion.div>
         </div>
-      </div>
 
-      {/* Bottom sparkle row */}
-      <div className="relative z-10 text-center py-3 px-6">
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="text-xs text-muted-foreground/50 font-display flex items-center justify-center gap-1"
-        >
-          <Zap size={10} className="text-cyan-500" />
-          Powered by curiosity and caffeine
-          <Zap size={10} className="text-cyan-500" />
-        </motion.p>
+        {/* Bottom system status telemetry */}
+        <div className="mt-8 pt-4 border-t border-[rgba(255,255,255,0.04)] text-center">
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="text-[9px] font-mono uppercase tracking-[0.15em] text-zinc-600 flex items-center justify-center gap-2"
+          >
+            <Zap size={9} className="text-[#00FF88] animate-pulse" />
+            SYS_STATUS: ONLINE // SECURITY_CONTEXT: SECURE // PORTFOLIO_V3.0
+            <Zap size={9} className="text-[#00FF88] animate-pulse" />
+          </motion.p>
+        </div>
       </div>
-    </footer >
+    </footer>
   );
 }

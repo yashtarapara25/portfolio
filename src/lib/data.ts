@@ -133,8 +133,8 @@ export const education: Education[] = [
 export const about = {
   name: "Tarapara Yash",
   title: "AI & Data Science Developer",
-  tagline: "Building intelligent applications using Machine Learning and Web Technologies.",
-  bio: "I am an aspiring AI and Data Science developer focused on building real-world intelligent applications using machine learning and modern web technologies. I enjoy working on projects that combine data, automation, and interactive interfaces to create meaningful solutions. My experience includes developing predictive models, automation tools, and data-driven dashboards. I am particularly interested in end-to-end development—from data processing and model training to deployment and visualization. I am actively improving my skills in artificial intelligence and full-stack development while seeking opportunities to contribute to innovative technology projects.",
+  tagline: "Building intelligent applications using Machine Learning and AI Technologies.",
+  bio: "I am an aspiring AI and Data Science developer focused on building real-world intelligent applications using machine learning and modern AI technologies. I enjoy working on projects that combine data, automation, and interactive interfaces to create meaningful solutions. My experience includes developing predictive models, automation tools, and data-driven dashboards. I am particularly interested in end-to-end development—from data processing and model training to deployment and visualization. I am actively improving my skills in artificial intelligence and full-stack development while seeking opportunities to contribute to innovative technology projects.",
   email: "alex@example.dev",
   github: "https://github.com",
   linkedin: "https://linkedin.com",

@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Code2, Zap, Award } from "lucide-react";
+import { Menu, X, Zap } from "lucide-react";
 import { useSiteSettings } from "@/hooks/use-portfolio-data";
+import profileImg from "@/assets/profile-portrait.jpg";
 
-// Nav order: About → Projects → Skills → Certificates → Education → Contact
+// Nav order: About → Projects → Skills → Certificates → Education
 const allNavItems = [
   { label: "About",        href: "#about",        sectionId: "about" },
   { label: "Projects",     href: "#projects",     sectionId: "projects" },
   { label: "Skills",       href: "#skills",       sectionId: "skills" },
-  { label: "Certificates", href: "#achievements", sectionId: "achievements", icon: Award },
+  { label: "Certificates", href: "#achievements", sectionId: "achievements" },
   { label: "Education",    href: "#education",    sectionId: "education" },
-  { label: "Contact",      href: "#contact",      sectionId: "contact" },
 ];
 
 /**
@@ -49,6 +49,22 @@ function useActiveSection(ids: string[]) {
 }
 
 
+/** Smooth-scroll to a section by id, with fallback retry for lazy-loaded sections */
+function scrollToSection(sectionId: string) {
+  const attempt = (retries: number) => {
+    const el = document.getElementById(sectionId);
+    if (el) {
+      const headerOffset = 80;
+      const top = el.getBoundingClientRect().top + window.scrollY - headerOffset;
+      window.scrollTo({ top, behavior: "smooth" });
+    } else if (retries > 0) {
+      // Section may be lazy-loaded — retry after a short wait
+      setTimeout(() => attempt(retries - 1), 150);
+    }
+  };
+  attempt(5);
+}
+
 export default function Header() {
   const { settings } = useSiteSettings();
   const [scrolled, setScrolled] = useState(false);
@@ -70,7 +86,7 @@ export default function Header() {
       transition={{ duration: 0.6, ease: [0.2, 0.9, 0.3, 1] }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled
-          ? "bg-slate-900/85 backdrop-blur-xl border-b border-cyan-500/20 shadow-2xl shadow-cyan-500/5"
+          ? "bg-[#050816]/90 backdrop-blur-xl border-b border-[#00FF88]/10 shadow-2xl shadow-[#00FF88]/2"
           : "bg-transparent"
       }`}
       style={{
@@ -81,7 +97,7 @@ export default function Header() {
       {/* Animated top border */}
       {scrolled && (
         <motion.div
-          className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-400/60 to-transparent"
+          className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#00FF88]/30 to-transparent"
           initial={{ scaleX: 0 }}
           animate={{ scaleX: 1 }}
           transition={{ duration: 0.5 }}
@@ -92,53 +108,38 @@ export default function Header() {
         {/* Logo */}
         <motion.a
           href="#"
-          className="font-display text-lg font-bold flex items-center gap-2 group"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+          className="font-space text-base md:text-lg font-bold flex items-center gap-2 group pointer-events-auto"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
         >
-          <div className="relative w-9 h-9">
-            <motion.div
-              className="absolute inset-0 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-600 animate-glow-pulse"
-              whileHover={{ rotate: 360 }}
-              transition={{ duration: 0.7 }}
-            />
-            <div className="relative flex items-center justify-center w-full h-full">
-              <Code2 size={18} className="text-white" />
-            </div>
+          <div className="relative w-9 h-9 rounded-full overflow-hidden border-2 border-[#00FF88]/40 shadow-[0_0_10px_rgba(0,255,136,0.2)] group-hover:border-[#00FF88]/80 transition-all duration-300 flex-shrink-0">
+            <img src={profileImg} alt="Tarapara Yash" className="w-full h-full object-cover object-top" />
           </div>
-          <span className="relative text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 font-orbitron">
-            {settings.site_title || "Portfolio"}
+          <span className="text-white font-space tracking-tight">
+            Tarapara Yash Portfolio
           </span>
         </motion.a>
 
         {/* ── Desktop nav ── */}
         <nav className="hidden md:flex items-center gap-1">
-          {allNavItems.map((item, index) => {
+          {allNavItems.map((item) => {
             const isActive = activeSection === item.sectionId;
-            const Icon = item.icon;
 
             return (
               <a
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-1.5 text-sm font-medium px-4 py-2 rounded-lg relative group font-space transition-colors duration-200 ${
+                onClick={(e) => { e.preventDefault(); scrollToSection(item.sectionId); }}
+                className={`text-xs font-semibold tracking-wider px-4 py-2 rounded-lg relative group font-space transition-colors duration-200 uppercase cursor-pointer ${
                   isActive
-                    ? "text-cyan-300 font-semibold"
-                    : "text-muted-foreground hover:text-cyan-300"
+                    ? "text-[#00FF88]"
+                    : "text-zinc-400 hover:text-[#00FF88]"
                 }`}
               >
-                {Icon && (
-                  <Icon
-                    size={13}
-                    className={`shrink-0 transition-opacity duration-200 ${
-                      isActive ? "opacity-100 text-cyan-300" : "opacity-50 group-hover:opacity-100"
-                    }`}
-                  />
-                )}
                 {item.label}
                 {/* Active underline indicator */}
                 <span
-                  className={`absolute bottom-1 left-4 right-4 h-px rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 transition-all duration-300 origin-left ${
+                  className={`absolute bottom-0 left-4 right-4 h-0.5 rounded-full bg-[#00FF88] transition-all duration-300 origin-left ${
                     isActive ? "opacity-100 scale-x-100" : "opacity-0 scale-x-0"
                   }`}
                 />
@@ -150,27 +151,22 @@ export default function Header() {
         {/* CTA */}
         <motion.a
           href="#contact"
+          onClick={(e) => { e.preventDefault(); scrollToSection("contact"); }}
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.4 }}
-          whileHover={{ scale: 1.05, boxShadow: "0 0 25px rgba(34,211,238,0.5)" }}
+          whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className="hidden md:inline-flex items-center gap-2 text-sm font-semibold px-5 py-2.5 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 text-white hover:shadow-lg transition-all font-space relative overflow-hidden group"
+          className="hidden md:inline-flex items-center gap-2 text-xs font-mono tracking-widest px-5 py-2.5 rounded-full border border-[#00FF88]/30 text-[#00FF88] bg-transparent hover:bg-[#00FF88]/5 hover:border-[#00FF88] transition-all duration-300 uppercase cursor-pointer"
         >
-          <motion.span
-            animate={{ scale: [1, 1.3, 1] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            <Zap size={14} />
-          </motion.span>
-          Let's Talk
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+          <Zap size={12} className="text-[#00FF88]" />
+          LET'S TALK
         </motion.a>
 
         {/* Mobile toggle */}
         <motion.button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="md:hidden text-foreground p-2 rounded-lg hover:bg-slate-800 transition-colors"
+          className="md:hidden text-white p-2 rounded-lg hover:bg-slate-800 transition-colors"
           aria-label="Toggle menu"
           whileTap={{ scale: 0.9 }}
         >
@@ -196,41 +192,31 @@ export default function Header() {
             animate={{ opacity: 1, height: "auto", y: 0 }}
             exit={{ opacity: 0, height: 0, y: -10 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="md:hidden overflow-hidden border-t border-cyan-500/20 bg-slate-900/90 backdrop-blur-xl"
+            className="md:hidden overflow-hidden border-t border-[#00FF88]/10 bg-[#050816]/95 backdrop-blur-xl"
           >
             <div className="container max-w-6xl mx-auto px-6 py-4 flex flex-col gap-1">
               {allNavItems.map((item, index) => {
                 const isActive = activeSection === item.sectionId;
-                const Icon = item.icon;
 
                 return (
                   <motion.a
                     key={item.href}
                     href={item.href}
-                    onClick={() => setMobileOpen(false)}
+                    onClick={(e) => { e.preventDefault(); scrollToSection(item.sectionId); setMobileOpen(false); }}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.06 }}
-                    className={`text-sm py-3 px-4 rounded-lg font-space flex items-center gap-2 transition-colors duration-200 ${
+                    className={`text-xs py-3 px-4 rounded-lg font-space tracking-wider flex items-center gap-2 uppercase transition-colors duration-200 cursor-pointer ${
                       isActive
-                        ? "text-cyan-300 font-semibold"
-                        : "text-muted-foreground hover:text-cyan-300 hover:bg-cyan-500/10"
+                        ? "text-white font-semibold bg-[#00FF88]/10"
+                        : "text-zinc-400 hover:text-white hover:bg-[#00FF88]/10"
                     }`}
                   >
-                    {Icon ? (
-                      <Icon
-                        size={14}
-                        className={`shrink-0 ${
-                          isActive ? "text-cyan-300" : "opacity-50"
-                        }`}
-                      />
-                    ) : (
-                      <span
-                        className={`w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0 transition-opacity ${
-                          isActive ? "opacity-100" : "opacity-0"
-                        }`}
-                      />
-                    )}
+                    <span
+                      className={`w-1.5 h-1.5 rounded-full bg-[#00FF88] shrink-0 transition-opacity ${
+                        isActive ? "opacity-100 animate-pulse" : "opacity-0"
+                      }`}
+                    />
                     {item.label}
                   </motion.a>
                 );
@@ -238,13 +224,13 @@ export default function Header() {
 
               <motion.a
                 href="#contact"
-                onClick={() => setMobileOpen(false)}
+                onClick={(e) => { e.preventDefault(); scrollToSection("contact"); setMobileOpen(false); }}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: allNavItems.length * 0.06 }}
-                className="text-sm font-semibold px-4 py-3 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 text-white mt-2 text-center font-space"
+                className="text-xs font-bold tracking-widest px-4 py-3 rounded-xl border border-[#00FF88]/30 text-[#00FF88] hover:bg-[#00FF88]/5 bg-transparent mt-2 text-center font-mono uppercase cursor-pointer"
               >
-                Let's Talk
+                LET'S TALK
               </motion.a>
             </div>
           </motion.nav>

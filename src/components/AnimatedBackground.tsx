@@ -1,23 +1,12 @@
 import { useEffect, useRef } from "react";
 
-interface Particle {
+interface Node3D {
   x: number;
   y: number;
-  size: number;
-  speedX: number;
-  speedY: number;
+  z: number;
+  baseSize: number;
   opacity: number;
-  hue: number;
-  life: number;
-  maxLife: number;
 }
-
-// ─── Tuning constants ────────────────────────────────────────────────────────
-const BASE_COUNT = 35;          // desktop particle count (reduced from 45)
-const MOBILE_COUNT = 18;        // mobile: far fewer particles
-const CONNECT_RADIUS_SQ = 8100; // 90px² (was 120px = 14400) — cuts pair checks ~44%
-const MOUSE_RADIUS_SQ = 14400;  // 120px² for mouse interaction
-// ────────────────────────────────────────────────────────────────────────────
 
 export default function AnimatedBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -26,205 +15,198 @@ export default function AnimatedBackground() {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    // ── Skip animation entirely for users who prefer reduced motion ───────
-    // This eliminates ALL canvas work for ~20% of users and prevents
-    // any scroll jank on devices with accessibility settings enabled.
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (prefersReduced) return;
 
-    // willReadFrequently: false (we never call getImageData) — lets the browser
-    // keep the canvas on the GPU without a round-trip to CPU memory.
     const ctx = canvas.getContext("2d", { alpha: true, willReadFrequently: false });
     if (!ctx) return;
 
-    // ── Determine particle count based on device ──────────────────────────
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
     const isMobile = window.matchMedia("(max-width: 768px)").matches;
-    const PARTICLE_COUNT = isMobile ? MOBILE_COUNT : BASE_COUNT;
+    const nodeCount = isMobile ? 25 : 60;
+    const maxDistance3D = isMobile ? 130 : 170;
 
-    // ── Canvas sizing ─────────────────────────────────────────────────────
-    let raf = 0;
-    const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-    resizeCanvas();
+    const nodes: Node3D[] = [];
+    const sizeRange = isMobile ? 150 : 250; // spread range for nodes in 3D space
 
-    // ── Mouse tracking (stored in ref — never triggers re-render) ─────────
-    const mouse = { x: -9999, y: -9999 };
-    let mouseMoveScheduled = false;
-    const handleMouseMove = (e: MouseEvent) => {
-      // Throttle: only update on next animation frame, not every mousemove event
-      if (!mouseMoveScheduled) {
-        mouseMoveScheduled = true;
-        requestAnimationFrame(() => {
-          mouse.x = e.clientX;
-          mouse.y = e.clientY;
-          mouseMoveScheduled = false;
-        });
+    for (let i = 0; i < nodeCount; i++) {
+      nodes.push({
+        x: (Math.random() - 0.5) * sizeRange * 2.5,
+        y: (Math.random() - 0.5) * sizeRange * 2.5,
+        z: (Math.random() - 0.5) * sizeRange * 2,
+        baseSize: Math.random() * 1.5 + 0.8,
+        opacity: Math.random() * 0.4 + 0.2,
+      });
+    }
+
+    // Precalculate connections once on mount to save performance during renders
+    const connections: Array<{ i: number; j: number; dist: number }> = [];
+    for (let i = 0; i < nodeCount; i++) {
+      for (let j = i + 1; j < nodeCount; j++) {
+        const dx = nodes[i].x - nodes[j].x;
+        const dy = nodes[i].y - nodes[j].y;
+        const dz = nodes[i].z - nodes[j].z;
+        const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+        if (dist < maxDistance3D) {
+          connections.push({ i, j, dist });
+        }
       }
+    }
+
+    // Angle tracking
+    let angleX = 0;
+    let angleY = 0;
+    let targetAngleX = 0;
+    let targetAngleY = 0;
+
+    const mouse = { x: 0, y: 0, targetX: 0, targetY: 0, active: false };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      mouse.targetX = e.clientX;
+      mouse.targetY = e.clientY;
+      mouse.active = true;
+
+      // Mouse influence on rotation angles
+      targetAngleY = ((e.clientX / window.innerWidth) - 0.5) * 0.4;
+      targetAngleX = ((e.clientY / window.innerHeight) - 0.5) * -0.4;
     };
-    const handleMouseOut = () => { mouse.x = -9999; mouse.y = -9999; };
+
+    const handleMouseLeave = () => {
+      mouse.active = false;
+    };
 
     window.addEventListener("mousemove", handleMouseMove, { passive: true });
-    window.addEventListener("mouseout", handleMouseOut, { passive: true });
+    window.addEventListener("mouseleave", handleMouseLeave, { passive: true });
 
-    // ── Pre-built gradient cache (avoid createRadialGradient every frame) ─
-    // We bucket hues into 4 groups: cyan(~195), purple(~290), mix, mix2
-    // Each gradient is created once and stored.
-    const GRADIENT_CACHE = new Map<number, CanvasGradient>();
-    const getGradient = (p: Particle): CanvasGradient => {
-      const hueBucket = Math.round(p.hue / 10) * 10; // bucket to nearest 10°
-      if (GRADIENT_CACHE.has(hueBucket)) return GRADIENT_CACHE.get(hueBucket)!;
-      // Create at point (0,0) — we'll set transform each time (faster than re-creating)
-      const g = ctx.createRadialGradient(0, 0, 0, 0, 0, p.size * 3);
-      g.addColorStop(0, `hsla(${hueBucket}, 90%, 70%, 1)`);
-      g.addColorStop(1, `hsla(${hueBucket}, 80%, 60%, 0)`);
-      GRADIENT_CACHE.set(hueBucket, g);
-      return g;
+    let raf = 0;
+    const focalLength = 400;
+
+    const resizeCanvas = () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
     };
+    window.addEventListener("resize", resizeCanvas, { passive: true });
 
-    // ── Particle factory ──────────────────────────────────────────────────
-    const createParticle = (x?: number, y?: number): Particle => ({
-      x: x ?? Math.random() * canvas.width,
-      y: y ?? Math.random() * canvas.height,
-      size: Math.random() * 1.8 + 0.4,
-      speedX: (Math.random() - 0.5) * 0.5,
-      speedY: (Math.random() - 0.5) * 0.5,
-      opacity: Math.random() * 0.45 + 0.12,
-      hue: Math.random() > 0.55 ? 280 + Math.random() * 50 : 185 + Math.random() * 30,
-      life: 0,
-      maxLife: 220 + Math.random() * 380,
-    });
-
-    const particles: Particle[] = Array.from({ length: PARTICLE_COUNT }, () => createParticle());
-
-    let time = 0;
-    let lastTime = 0;
-
-    // ── Main render loop ──────────────────────────────────────────────────
-    const animate = (now: number) => {
-      raf = requestAnimationFrame(animate);
-
-      // Pause when tab is not visible — saves battery and GPU bandwidth
+    const render = () => {
+      raf = requestAnimationFrame(render);
       if (document.visibilityState === "hidden") return;
 
-      // Cap delta to avoid huge jumps after tab switch
-      const delta = Math.min(now - lastTime, 32);
-      lastTime = now;
-      time += delta * 0.001; // time in seconds
+      // Clear canvas every frame
+      ctx.clearRect(0, 0, width, height);
 
-      // Fade trail — using fillRect is cheaper than clearRect + redraw
-      ctx.fillStyle = "rgba(8, 10, 22, 0.08)";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      // Inertia: smooth actual angles toward target angles
+      angleX += (targetAngleX - angleX) * 0.05;
+      angleY += (targetAngleY - angleY) * 0.05;
 
-      for (let idx = 0; idx < PARTICLE_COUNT; idx++) {
-        const p = particles[idx];
-        p.x += p.speedX;
-        p.y += p.speedY;
-        p.life++;
+      // Constant slow base rotation so it doesn't stand still
+      const currentAngleY = angleY + performance.now() * 0.0001;
+      const currentAngleX = angleX + performance.now() * 0.00005;
 
-        // Gentle float drift (pre-computed sin/cos offset)
-        p.x += Math.sin(time + idx * 0.7) * 0.12;
-        p.y += Math.cos(time * 1.1 + idx * 0.5) * 0.09;
+      const cosX = Math.cos(currentAngleX);
+      const sinX = Math.sin(currentAngleX);
+      const cosY = Math.cos(currentAngleY);
+      const sinY = Math.sin(currentAngleY);
 
-        // Wrap edges
-        if (p.x < -10) p.x = canvas.width + 10;
-        else if (p.x > canvas.width + 10) p.x = -10;
-        if (p.y < -10) p.y = canvas.height + 10;
-        else if (p.y > canvas.height + 10) p.y = -10;
+      // Project nodes and draw
+      const projected: Array<{ x: number; y: number; size: number; opacity: number; depth: number } | null> = [];
 
-        // Lifecycle fade-in / fade-out
-        const lifeFraction = p.life / p.maxLife;
-        const fadeOpacity =
-          lifeFraction < 0.1
-            ? (lifeFraction / 0.1) * p.opacity
-            : lifeFraction > 0.85
-              ? ((1 - lifeFraction) / 0.15) * p.opacity
-              : p.opacity;
+      for (let i = 0; i < nodeCount; i++) {
+        const node = nodes[i];
 
-        // Recycle
-        if (p.life >= p.maxLife) {
-          Object.assign(p, createParticle());
+        // Rotate around Y axis
+        const x1 = node.x * cosY - node.z * sinY;
+        const z1 = node.x * sinY + node.z * cosY;
+
+        // Rotate around X axis
+        const y2 = node.y * cosX - z1 * sinX;
+        const z2 = node.y * sinX + z1 * cosX;
+
+        // Depth perspective mapping
+        const depth = focalLength + z2;
+        if (depth <= 0) {
+          projected.push(null);
           continue;
         }
 
-        // ── Mouse interaction ──────────────────────────────────────────
-        const dxM = p.x - mouse.x;
-        const dyM = p.y - mouse.y;
-        const distMSq = dxM * dxM + dyM * dyM;
+        const scale = focalLength / depth;
+        const projX = width / 2 + x1 * scale;
+        const projY = height / 2 + y2 * scale;
 
-        if (distMSq < MOUSE_RADIUS_SQ) {
-          p.x -= dxM * 0.014;
-          p.y -= dyM * 0.014;
+        // Fade out nodes that are too close or too far
+        const opacity = node.opacity * scale * (1 - Math.abs(z2) / (sizeRange * 1.5));
+        const size = node.baseSize * scale;
 
-          const lineOpacity = (1 - distMSq / MOUSE_RADIUS_SQ) * 0.65 * fadeOpacity;
+        projected.push({
+          x: projX,
+          y: projY,
+          size: Math.max(0.1, size),
+          opacity: Math.max(0, Math.min(0.6, opacity)),
+          depth: z2,
+        });
+      }
+
+      // Draw connection lines in 3D using precalculated connections list
+      for (let k = 0; k < connections.length; k++) {
+        const { i, j, dist } = connections[k];
+        const p1 = projected[i];
+        const p2 = projected[j];
+        if (!p1 || !p2) continue; // Skip if either node is out of viewport/behind screen
+
+        const lineOpacity = (1 - dist / maxDistance3D) * 0.12 * Math.min(p1.opacity, p2.opacity);
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.strokeStyle = `hsla(153, 100%, 50%, ${lineOpacity})`;
+        ctx.lineWidth = 0.4 * (p1.size + p2.size) / 2;
+        ctx.stroke();
+      }
+
+      // Draw node particles
+      for (let i = 0; i < projected.length; i++) {
+        const p = projected[i];
+        if (!p) continue;
+        
+        // Glow layer for front-most nodes
+        if (p.depth < 0) {
           ctx.beginPath();
-          ctx.moveTo(p.x, p.y);
-          ctx.lineTo(mouse.x, mouse.y);
-          ctx.strokeStyle = `hsla(${p.hue}, 80%, 70%, ${lineOpacity})`;
-          ctx.lineWidth = 0.8;
-          ctx.stroke();
+          ctx.arc(p.x, p.y, p.size * 3.5, 0, Math.PI * 2);
+          ctx.fillStyle = `hsla(153, 100%, 50%, ${p.opacity * 0.2})`;
+          ctx.fill();
         }
 
-        // ── Draw particle (core dot only — simpler, still beautiful) ──
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size * 2.5, 0, Math.PI * 2);
-
-        // Use cached gradient — offset with save/restore transform
-        ctx.save();
-        ctx.translate(p.x, p.y);
-        const grad = getGradient(p);
-        ctx.globalAlpha = fadeOpacity;
-        ctx.fillStyle = grad;
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = `hsla(153, 100%, 75%, ${p.opacity})`;
         ctx.fill();
-        ctx.restore();
+      }
 
-        // Core bright dot
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size * 0.7, 0, Math.PI * 2);
-        ctx.fillStyle = `hsla(${p.hue}, 100%, 85%, ${Math.min(fadeOpacity * 1.4, 1)})`;
-        ctx.fill();
-        ctx.globalAlpha = 1;
-
-        // ── Connection lines (forward-only, reduced radius) ───────────
-        for (let j = idx + 1; j < PARTICLE_COUNT; j++) {
-          const p2 = particles[j];
-          const dx = p.x - p2.x;
-          const dy = p.y - p2.y;
-          const sq = dx * dx + dy * dy;
-
-          if (sq < CONNECT_RADIUS_SQ) {
-            const lineOpacity = (1 - sq / CONNECT_RADIUS_SQ) * 0.12 * fadeOpacity;
-            ctx.beginPath();
-            ctx.moveTo(p.x, p.y);
-            ctx.lineTo(p2.x, p2.y);
-            ctx.strokeStyle = `hsla(${p.hue}, 75%, 65%, ${lineOpacity})`;
-            ctx.lineWidth = 0.5;
-            ctx.stroke();
-          }
-        }
+      // If mouse is active, draw a subtle follow spotlight
+      if (mouse.active) {
+        mouse.x += (mouse.targetX - mouse.x) * 0.08;
+        mouse.y += (mouse.targetY - mouse.y) * 0.08;
       }
     };
 
-    raf = requestAnimationFrame(animate);
-
-    const handleResize = () => resizeCanvas();
-    window.addEventListener("resize", handleResize, { passive: true });
+    render();
 
     return () => {
       cancelAnimationFrame(raf);
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("resize", resizeCanvas);
       window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseout", handleMouseOut);
+      window.removeEventListener("mouseleave", handleMouseLeave);
     };
   }, []);
 
   return (
-    <canvas
-      ref={canvasRef}
-      className="fixed inset-0 pointer-events-none"
-      style={{ zIndex: 1, opacity: 0.55, willChange: "transform" }}
-      aria-hidden="true"
-    />
+    <div className="fixed inset-0 pointer-events-none z-0 bg-background">
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 w-full h-full"
+        style={{ opacity: 0.35 }}
+        aria-hidden="true"
+      />
+    </div>
   );
 }

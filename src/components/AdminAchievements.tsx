@@ -22,6 +22,7 @@ export default function AdminAchievements() {
         date: new Date().getFullYear().toString(),
         description: "",
         image_url: "",
+        credential_url: "",
         sort_order: 0,
     });
     const [submitting, setSubmitting] = useState(false);
@@ -82,6 +83,7 @@ export default function AdminAchievements() {
                 date: new Date().getFullYear().toString(),
                 description: "",
                 image_url: "",
+                credential_url: "",
                 sort_order: achievements.length + 1,
             });
             setEditingId(null);
@@ -102,6 +104,7 @@ export default function AdminAchievements() {
             date: achievement.date,
             description: achievement.description || "",
             image_url: achievement.image_url || "",
+            credential_url: achievement.credential_url || "",
             sort_order: achievement.sort_order || 0,
         });
         setEditingId(achievement.id);
@@ -168,31 +171,37 @@ export default function AdminAchievements() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800">
-            <nav className="bg-gray-900 border-b border-gray-700 p-4">
-                <div className="container max-w-6xl mx-auto flex justify-between items-center">
+        <div className="min-h-screen bg-[#050816] relative overflow-hidden text-zinc-300 font-sans pb-12">
+            {/* Background decoration */}
+            <div className="absolute -left-12 -top-12 w-48 h-48 rounded-full bg-[#00FF88]/5 blur-3xl pointer-events-none" />
+            <div className="absolute inset-0 bg-grid-pattern opacity-5 pointer-events-none" />
+
+            <nav className="bg-[#050816]/90 backdrop-blur-xl border-b border-[#00FF88]/15 p-4 relative z-20">
+                <div className="container max-w-6xl mx-auto flex justify-between items-center flex-wrap gap-4">
                     <div className="flex items-center gap-4">
                         <Button
                             onClick={() => navigate("/admin/dashboard")}
-                            variant="ghost"
+                            className="bg-transparent border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700 hover:bg-white/5 font-mono text-xs uppercase"
                             size="sm"
                         >
-                            <ArrowLeft size={16} className="mr-2" />
+                            <ArrowLeft size={14} className="mr-1.5" />
                             Back
                         </Button>
-                        <div className="flex items-center gap-2 text-cyan-400">
-                            <Award size={24} />
-                            <h1 className="text-2xl font-bold font-orbitron">Manage Achievements</h1>
+                        <div className="flex items-center gap-2 text-[#00FF88]">
+                            <Award size={20} />
+                            <h1 className="text-xl font-bold font-space text-white tracking-wide">
+                              Manage <span className="text-[#00FF88] text-gradient">Achievements</span>
+                            </h1>
                         </div>
                     </div>
                     <div className="flex gap-3">
                         {achievements.length > 0 && (
                             <Button
                                 onClick={handleDeleteAll}
-                                variant="destructive"
-                                className="gap-2 bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20"
+                                className="gap-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 font-mono text-xs uppercase"
+                                size="sm"
                             >
-                                <Trash2 size={16} />
+                                <Trash2 size={14} />
                                 Delete All
                             </Button>
                         )}
@@ -204,37 +213,45 @@ export default function AdminAchievements() {
                                     date: new Date().getFullYear().toString(),
                                     description: "",
                                     image_url: "",
+                                    credential_url: "",
                                     sort_order: achievements.length + 1,
                                 });
                                 setEditingId(null);
                                 setShowForm(true);
                             }}
-                            className="gap-2 bg-cyan-600 hover:bg-cyan-700 text-white"
+                            className="gap-1.5 bg-[#00FF88]/10 border border-[#00FF88]/30 hover:border-[#00FF88] text-[#00FF88] hover:bg-[#00FF88]/20 transition-all font-mono text-xs uppercase font-bold tracking-wider"
                         >
-                            <Plus size={16} />
+                            <Plus size={14} />
                             Add Achievement
                         </Button>
                     </div>
                 </div>
             </nav>
 
-            <div className="container max-w-6xl mx-auto py-8 px-4">
+            <div className="container max-w-6xl mx-auto py-8 px-4 relative z-10">
                 {errorMsg && (
-                    <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400">
+                    <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 font-mono text-xs">
                         {errorMsg}
                     </div>
                 )}
 
                 {showForm && (
-                    <div className="bg-gray-800 rounded-lg border border-gray-700 p-6 mb-8 shadow-xl">
-                        <h2 className="text-2xl font-bold text-white mb-6 font-orbitron">
-                            {editingId ? "Edit Achievement" : "New Achievement"}
+                    <div className="bg-[#0b1120]/45 backdrop-blur-xl border border-[rgba(255,255,255,0.07)] rounded-2xl p-6 mb-8 relative overflow-hidden shadow-2xl">
+                        {/* Corner Brackets */}
+                        <div className="absolute top-3 left-3 w-3 h-3 border-t-2 border-l-2 border-[#00FF88]/20 pointer-events-none" />
+                        <div className="absolute top-3 right-3 w-3 h-3 border-t-2 border-r-2 border-[#00FF88]/20 pointer-events-none" />
+                        <div className="absolute bottom-3 left-3 w-3 h-3 border-b-2 border-l-2 border-[#00FF88]/20 pointer-events-none" />
+                        <div className="absolute bottom-3 right-3 w-3 h-3 border-b-2 border-r-2 border-[#00FF88]/20 pointer-events-none" />
+
+                        <h2 className="text-xl font-bold font-space text-white mb-6 flex items-center gap-2">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#00FF88]" />
+                          {editingId ? "Modify Achievement Details" : "Register New Achievement"}
                         </h2>
 
-                        <form onSubmit={handleSubmit} className="space-y-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <form onSubmit={handleSubmit} className="space-y-5">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                                    <label className="block text-xs font-mono uppercase tracking-wider text-zinc-400 mb-2">
                                         Title
                                     </label>
                                     <Input
@@ -242,14 +259,14 @@ export default function AdminAchievements() {
                                         onChange={(e) =>
                                             setFormData({ ...formData, title: e.target.value })
                                         }
-                                        className="bg-gray-700 border-gray-600 focus:border-cyan-500 text-white"
+                                        className="bg-[#050816]/50 border-[rgba(255,255,255,0.1)] focus:border-[#00FF88]/40 focus:ring-1 focus:ring-[#00FF88]/20 text-zinc-300 font-mono text-sm"
                                         placeholder="e.g. AWS Certified Solutions Architect"
                                         required
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                                    <label className="block text-xs font-mono uppercase tracking-wider text-zinc-400 mb-2">
                                         Issuer / Organization
                                     </label>
                                     <Input
@@ -257,16 +274,16 @@ export default function AdminAchievements() {
                                         onChange={(e) =>
                                             setFormData({ ...formData, issuer: e.target.value })
                                         }
-                                        className="bg-gray-700 border-gray-600 focus:border-cyan-500 text-white"
+                                        className="bg-[#050816]/50 border-[rgba(255,255,255,0.1)] focus:border-[#00FF88]/40 focus:ring-1 focus:ring-[#00FF88]/20 text-zinc-300 font-mono text-sm"
                                         placeholder="e.g. Amazon Web Services"
                                         required
                                     />
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                                    <label className="block text-xs font-mono uppercase tracking-wider text-zinc-400 mb-2">
                                         Date
                                     </label>
                                     <Input
@@ -274,14 +291,14 @@ export default function AdminAchievements() {
                                         onChange={(e) =>
                                             setFormData({ ...formData, date: e.target.value })
                                         }
-                                        className="bg-gray-700 border-gray-600 focus:border-cyan-500 text-white"
+                                        className="bg-[#050816]/50 border-[rgba(255,255,255,0.1)] focus:border-[#00FF88]/40 focus:ring-1 focus:ring-[#00FF88]/20 text-zinc-300 font-mono text-sm"
                                         placeholder="e.g. Oct 2023"
                                         required
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                                    <label className="block text-xs font-mono uppercase tracking-wider text-zinc-400 mb-2">
                                         Sort Order
                                     </label>
                                     <Input
@@ -290,29 +307,42 @@ export default function AdminAchievements() {
                                         onChange={(e) =>
                                             setFormData({ ...formData, sort_order: parseInt(e.target.value) || 0 })
                                         }
-                                        className="bg-gray-700 border-gray-600 focus:border-cyan-500 text-white"
+                                        className="bg-[#050816]/50 border-[rgba(255,255,255,0.1)] focus:border-[#00FF88]/40 focus:ring-1 focus:ring-[#00FF88]/20 text-zinc-300 font-mono text-sm"
                                     />
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-300 mb-2 flex items-center gap-2">
-                                        <LinkIcon size={14} /> Certificate Link (Image or PDF URL)
+                                    <label className="block text-xs font-mono uppercase tracking-wider text-zinc-400 mb-2 flex items-center gap-1.5">
+                                        <ImageIcon size={12} className="text-[#00FF88]" /> Certificate URL (Drive link, image link, etc.)
                                     </label>
                                     <Input
                                         value={formData.image_url}
                                         onChange={(e) =>
                                             setFormData({ ...formData, image_url: e.target.value })
                                         }
-                                        className="bg-gray-700 border-gray-600 focus:border-cyan-500 text-white"
+                                        className="bg-[#050816]/50 border-[rgba(255,255,255,0.1)] focus:border-[#00FF88]/40 focus:ring-1 focus:ring-[#00FF88]/20 text-zinc-300 font-mono text-sm"
                                         placeholder="https://drive.google.com/..."
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-mono uppercase tracking-wider text-zinc-400 mb-2 flex items-center gap-1.5">
+                                        <LinkIcon size={12} className="text-[#00FF88]" /> Verification Link (Optional)
+                                    </label>
+                                    <Input
+                                        value={formData.credential_url}
+                                        onChange={(e) =>
+                                            setFormData({ ...formData, credential_url: e.target.value })
+                                        }
+                                        className="bg-[#050816]/50 border-[rgba(255,255,255,0.1)] focus:border-[#00FF88]/40 focus:ring-1 focus:ring-[#00FF88]/20 text-zinc-300 font-mono text-sm"
+                                        placeholder="https://coursera.org/verify/..."
                                     />
                                 </div>
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-300 mb-2">
+                                <label className="block text-xs font-mono uppercase tracking-wider text-zinc-400 mb-2">
                                     Description (Optional)
                                 </label>
                                 <Textarea
@@ -320,7 +350,7 @@ export default function AdminAchievements() {
                                     onChange={(e) =>
                                         setFormData({ ...formData, description: e.target.value })
                                     }
-                                    className="bg-gray-700 border-gray-600 focus:border-cyan-500 min-h-[100px] text-white"
+                                    className="bg-[#050816]/50 border-[rgba(255,255,255,0.1)] focus:border-[#00FF88]/40 focus:ring-1 focus:ring-[#00FF88]/20 text-zinc-300 font-mono text-sm min-h-[80px]"
                                     placeholder="Brief description of the certification or what you learned..."
                                 />
                             </div>
@@ -329,9 +359,9 @@ export default function AdminAchievements() {
                                 <Button
                                     type="submit"
                                     disabled={submitting}
-                                    className="bg-cyan-600 hover:bg-cyan-700 text-white"
+                                    className="bg-[#00FF88]/10 border border-[#00FF88]/30 hover:border-[#00FF88] text-[#00FF88] hover:bg-[#00FF88]/20 transition-all font-mono text-xs uppercase font-bold tracking-wider"
                                 >
-                                    {submitting ? "Saving..." : "Save Achievement"}
+                                    {submitting ? "Processing..." : "Commit Entry"}
                                 </Button>
                                 <Button
                                     type="button"
@@ -339,8 +369,7 @@ export default function AdminAchievements() {
                                         setShowForm(false);
                                         setEditingId(null);
                                     }}
-                                    variant="outline"
-                                    className="bg-transparent text-gray-300 border-gray-600 hover:bg-gray-700"
+                                    className="bg-transparent border border-zinc-800 text-zinc-500 hover:text-zinc-300 hover:border-zinc-700 hover:bg-white/5 font-mono text-xs uppercase"
                                 >
                                     Cancel
                                 </Button>
@@ -350,61 +379,68 @@ export default function AdminAchievements() {
                 )}
 
                 <div className="space-y-4">
-                    <h2 className="text-xl font-bold text-white font-orbitron mb-6">
-                        {loadingAchievements
-                            ? "Loading..."
-                            : `Current Achievements (${achievements.length})`}
-                    </h2>
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-1.5 h-1.5 rounded-full bg-[#00FF88]" />
+                      <h2 className="text-xl font-bold font-space text-white tracking-wide">
+                          {loadingAchievements
+                              ? "Scanning Registry..."
+                              : `Achievements Database Registry (${achievements.length})`}
+                      </h2>
+                    </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {achievements.map((achievement) => (
                             <div
                                 key={achievement.id}
-                                className="bg-gray-800 rounded-xl border border-gray-700 flex flex-col overflow-hidden hover:border-cyan-500/50 transition-colors"
+                                className="bg-[#0b1120]/45 backdrop-blur-xl border border-[rgba(255,255,255,0.06)] hover:border-[#00FF88]/20 rounded-xl flex flex-col overflow-hidden transition-all duration-300 relative"
                             >
-                                <div className="p-5 flex-1 space-y-3">
+                                {/* Accent Brackets */}
+                                <div className="absolute top-2 left-2 w-2 h-2 border-t border-l border-[#00FF88]/20 pointer-events-none" />
+                                <div className="absolute top-2 right-2 w-2 h-2 border-t border-r border-[#00FF88]/20 pointer-events-none" />
+                                <div className="absolute bottom-2 left-2 w-2 h-2 border-b border-l border-[#00FF88]/20 pointer-events-none" />
+                                <div className="absolute bottom-2 right-2 w-2 h-2 border-b border-r border-[#00FF88]/20 pointer-events-none" />
+
+                                <div className="p-5 flex-1 space-y-4">
                                     <div className="flex justify-between items-start">
-                                        <div className="p-2 rounded-lg bg-cyan-500/10 text-cyan-400">
-                                            <Award size={20} />
+                                        <div className="p-2 rounded-lg bg-[#00FF88]/10 text-[#00FF88]">
+                                            <Award size={18} />
                                         </div>
-                                        <span className="text-xs font-semibold px-2 py-1 bg-gray-700 text-gray-300 rounded-md">
+                                        <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded border border-[#00FF88]/20 bg-[#00FF88]/5 text-white">
                                             {achievement.date}
                                         </span>
                                     </div>
 
                                     <div>
-                                        <h3 className="text-lg font-bold text-white leading-tight mb-1">
+                                        <h3 className="text-base font-bold text-white font-space leading-tight mb-1">
                                             {achievement.title}
                                         </h3>
-                                        <p className="text-cyan-400 text-sm font-medium">
+                                        <p className="text-[#00FF88] text-xs font-mono font-semibold uppercase tracking-wider">
                                             {achievement.issuer}
                                         </p>
                                     </div>
 
                                     {achievement.description && (
-                                        <p className="text-gray-400 text-sm line-clamp-2">
+                                        <p className="text-zinc-400 text-xs line-clamp-2 leading-relaxed">
                                             {achievement.description}
                                         </p>
                                     )}
                                 </div>
 
-                                <div className="bg-gray-900/50 p-3 border-t border-gray-700 flex justify-end gap-2">
+                                <div className="bg-[#050816]/40 p-3 border-t border-[rgba(255,255,255,0.04)] flex justify-end gap-2">
                                     <Button
                                         onClick={() => handleEdit(achievement)}
-                                        variant="ghost"
+                                        className="bg-transparent border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700 hover:bg-white/5 p-2 h-8"
                                         size="sm"
-                                        className="text-gray-300 hover:text-cyan-400 hover:bg-cyan-400/10 transition-colors"
                                     >
-                                        <Edit size={16} className="mr-2" />
+                                        <Edit size={13} className="mr-1" />
                                         Edit
                                     </Button>
                                     <Button
                                         onClick={() => handleDelete(achievement.id)}
-                                        variant="ghost"
+                                        className="bg-transparent border border-red-500/20 text-red-400 hover:text-white hover:border-red-500 hover:bg-red-500/10 p-2 h-8"
                                         size="sm"
-                                        className="text-gray-300 hover:text-red-400 hover:bg-red-400/10 transition-colors"
                                     >
-                                        <Trash2 size={16} className="mr-2" />
+                                        <Trash2 size={13} className="mr-1" />
                                         Delete
                                     </Button>
                                 </div>
@@ -413,10 +449,10 @@ export default function AdminAchievements() {
                     </div>
 
                     {!loadingAchievements && achievements.length === 0 && (
-                        <div className="text-center py-16 border border-dashed border-gray-700 rounded-xl bg-gray-800/50">
-                            <Award className="mx-auto text-gray-600 mb-4" size={48} />
-                            <p className="text-gray-400 text-lg">No achievements added yet.</p>
-                            <p className="text-gray-500 text-sm mt-2">Click "Add Achievement" to get started.</p>
+                        <div className="text-center py-16 border border-dashed border-zinc-800 rounded-xl bg-[#0b1120]/20">
+                            <Award className="mx-auto text-zinc-700 mb-4" size={40} />
+                            <p className="text-zinc-500 font-mono text-sm">NO ACHIEVEMENTS REGISTRY RECORDED.</p>
+                            <p className="text-zinc-600 text-xs font-mono mt-1">Click "Add Achievement" to register an entry.</p>
                         </div>
                     )}
                 </div>

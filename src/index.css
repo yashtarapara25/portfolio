@@ -10,53 +10,53 @@
 
 @layer base {
   :root {
-    --background: 220 20% 4%;
-    --foreground: 210 20% 92%;
+    --background: 222 47% 6%;      /* Clean, deep dark slate-black #060913 */
+    --foreground: 210 40% 98%;     /* Very crisp bright slate off-white #f8fafc */
 
-    --card: 220 18% 8%;
-    --card-foreground: 210 20% 92%;
+    --card: 222 47% 10%;           /* Highly attractive, solid dark-slate cards #0f172a */
+    --card-foreground: 210 40% 98%;
 
-    --popover: 220 18% 8%;
-    --popover-foreground: 210 20% 92%;
+    --popover: 222 47% 10%;
+    --popover-foreground: 210 40% 98%;
 
-    --primary: 174 72% 56%;
-    --primary-foreground: 220 20% 4%;
+    --primary: 153 100% 50%;       /* Pure Neon Green highlight #00FF88 */
+    --primary-foreground: 222 47% 6%;
 
-    --secondary: 220 16% 14%;
-    --secondary-foreground: 210 20% 85%;
+    --secondary: 222 30% 14%;
+    --secondary-foreground: 210 40% 90%;
 
-    --muted: 220 14% 12%;
-    --muted-foreground: 215 12% 50%;
+    --muted: 222 30% 12%;
+    --muted-foreground: 215 16% 70%; /* highly readable secondary text */
 
-    --accent: 174 72% 56%;
-    --accent-foreground: 220 20% 4%;
+    --accent: 153 100% 50%;        /* Vibrant Neon Green */
+    --accent-foreground: 222 47% 6%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 220 14% 16%;
-    --input: 220 14% 16%;
-    --ring: 174 72% 56%;
+    --border: 222 30% 16%;         /* Crisp, subtle borders #1e293b */
+    --input: 222 30% 16%;
+    --ring: 153 100% 50%;
 
     --radius: 0.75rem;
 
-    --sidebar-background: 220 18% 6%;
-    --sidebar-foreground: 210 20% 85%;
-    --sidebar-primary: 174 72% 56%;
-    --sidebar-primary-foreground: 220 20% 4%;
-    --sidebar-accent: 220 14% 12%;
-    --sidebar-accent-foreground: 210 20% 85%;
-    --sidebar-border: 220 14% 16%;
-    --sidebar-ring: 174 72% 56%;
+    --sidebar-background: 222 47% 5%;
+    --sidebar-foreground: 210 40% 85%;
+    --sidebar-primary: 153 100% 50%;
+    --sidebar-primary-foreground: 222 47% 6%;
+    --sidebar-accent: 222 30% 12%;
+    --sidebar-accent-foreground: 210 40% 85%;
+    --sidebar-border: 222 30% 15%;
+    --sidebar-ring: 153 100% 50%;
 
     /* Custom tokens */
-    --glow: 174 72% 56%;
-    --glow-muted: 174 40% 30%;
-    --surface: 220 16% 10%;
-    --surface-hover: 220 16% 14%;
-    --gradient-start: 174 72% 56%;
-    --gradient-end: 199 89% 48%;
-    --text-bright: 0 0% 100%;
+    --glow: 153 100% 50%;          /* Glowing Neon Green */
+    --glow-muted: 153 50% 25%;
+    --surface: 222 47% 10%;
+    --surface-hover: 222 47% 13%;
+    --gradient-start: 210 40% 98%;
+    --gradient-end: 215 16% 70%;
+    --text-bright: 210 40% 100%;
 
     font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
   }
@@ -67,6 +67,10 @@
     @apply border-border;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     @apply bg-background text-foreground antialiased;
     /* Prevent layout recalculation during font loading */
@@ -75,21 +79,21 @@
   }
 
   ::selection {
-    background: hsl(174 72% 56% / 0.3);
+    background: hsl(153 100% 50% / 0.2);
     color: hsl(0 0% 100%);
   }
 
   /* Smooth scroll — disabled for prefers-reduced-motion to prevent jank */
   html {
     scroll-behavior: smooth;
+    scroll-padding-top: 80px;
   }
 
   @media (prefers-reduced-motion: reduce) {
     html {
       scroll-behavior: auto;
     }
-    /* Pause ALL CSS animations and transitions for users who prefer reduced motion.
-       This also eliminates scroll jank caused by heavy animations on low-end devices. */
+    /* Pause ALL CSS animations and transitions for users who prefer reduced motion. */
     *, *::before, *::after {
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
@@ -103,16 +107,18 @@
   }
 
   ::-webkit-scrollbar-track {
-    background: hsl(var(--background));
+    background: #050816;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, hsl(174 72% 56% / 0.6), hsl(240 80% 60% / 0.6));
+    background: rgba(255, 255, 255, 0.12);
     border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, hsl(174 72% 56% / 0.9), hsl(240 80% 60% / 0.9));
+    background: rgba(0, 255, 136, 0.4);
+    box-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
   }
 }
 
@@ -301,7 +307,7 @@
 
   /* ── Section layout ── */
   .section-padding {
-    @apply py-24 px-6 md:px-12 lg:px-24;
+    @apply py-24 px-6 md:px-8 lg:px-12;
   }
 
   .grid-pattern {
@@ -550,4 +556,279 @@
 @keyframes send-arrow {
   0%, 100% { transform: translateX(0); }
   50%       { transform: translateX(5px); }
+}
+
+/*
+  HUD scan sweep — GPU-composited replacement for Framer Motion animate={{ top }}.
+  Uses translateY (transform) instead of top position — zero layout cost, runs on GPU.
+  The parent must be position:relative with overflow:hidden.
+*/
+@keyframes hud-scan-sweep {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(0%); }
+}
+
+.hud-scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 100%;
+  pointer-events: none;
+  animation: hud-scan-sweep 4s ease-in-out infinite;
+  will-change: transform;
+}
+
+.hud-scan::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.40), transparent);
+  box-shadow: 0 0 6px rgba(0, 255, 136, 0.3);
+}
+
+.hud-scan-slow {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 100%;
+  pointer-events: none;
+  animation: hud-scan-sweep 6s ease-in-out infinite;
+  will-change: transform;
+}
+
+.hud-scan-slow::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.25), transparent);
+  box-shadow: 0 0 4px rgba(0, 255, 136, 0.2);
+}
+
+.hud-scan-delay {
+  animation-delay: 1.5s;
+}
+
+.hud-scan-delay-2 {
+  animation-delay: 2.5s;
+}
+
+.hud-scan-thick {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 100%;
+  pointer-events: none;
+  animation: hud-scan-sweep 4s ease-in-out infinite;
+  will-change: transform;
+}
+
+.hud-scan-thick::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.40), transparent);
+  box-shadow: 0 0 8px rgba(0, 255, 136, 0.4);
+}
+
+/* Section paint containment — prevents section repaints from cascading */
+.section-contain {
+  contain: layout style;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   PREMIUM CLEAN SLATE-BLACK MODERN THEME OVERRIDES
+   ────────────────────────────────────────────────────────────────────────── */
+
+/* 1. Clean Background — no glow effects */
+body {
+  background-color: #080c18 !important;
+  background-image: linear-gradient(180deg, #080c18 0%, #0b0f1f 100%) !important;
+  color: #e2e8f0 !important;
+}
+
+/* Perfect text colors for light gray / slate */
+p, span, li, button, input, textarea, select {
+  color: #cbd5e1; /* Clear light slate text */
+}
+
+/* Headings: Crisp pure white */
+h1, h2, h3, h4, h5, h6,
+.text-white,
+[class*="text-zinc-100"],
+[class*="text-zinc-200"],
+[class*="text-slate-100"],
+[class*="text-slate-200"] {
+  color: #ffffff !important;
+}
+
+/* Secondary copy */
+.text-zinc-400,
+.text-zinc-500,
+.text-zinc-300,
+.text-slate-400,
+.text-slate-300,
+.text-muted-foreground {
+  color: #94a3b8 !important; /* highly visible slate gray */
+}
+
+/* 2. Hardcoded Dark Background Class Mapping */
+[class*="bg-[#050816]"]:not([class*="bg-[#050816]/"]), 
+[class*="from-[#050816]"]:not([class*="from-[#050816]/"]), 
+[class*="to-[#050816]"]:not([class*="to-[#050816]/"]),
+.bg-slate-950,
+.bg-zinc-950 {
+  background-color: #060913 !important;
+}
+
+/* Section transitions */
+[class*="from-[#050816]"]:not([class*="from-[#050816]/"])[class*="to-transparent"],
+[class*="from-[#0B1220]"]:not([class*="from-[#0B1220]/"])[class*="to-transparent"] {
+  background-image: linear-gradient(to top, rgba(6, 9, 19, 0.98) 0%, rgba(6, 9, 19, 0.4) 70%, transparent 100%) !important;
+}
+
+/* Fixed Header Navbar */
+header.fixed {
+  background: rgba(6, 9, 19, 0.85) !important;
+  border-bottom-color: rgba(255, 255, 255, 0.06) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Mobile Nav Menu */
+nav.md\:hidden {
+  background: rgba(6, 9, 19, 0.96) !important;
+  border-top-color: rgba(255, 255, 255, 0.06) !important;
+  backdrop-filter: blur(20px) !important;
+}
+
+/* 3. Polished Cards & Panels */
+[class*="bg-[#0B1220]"]:not([class*="bg-[#0B1220]/"]),
+.glass-card {
+  background-color: #0f1422 !important; /* solid, clean card color */
+  border-color: rgba(255, 255, 255, 0.05) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.02) !important;
+  color: #cbd5e1 !important;
+}
+
+/* Card hover */
+[class*="bg-[#0B1220]"]:not([class*="bg-[#0B1220]/"]):hover,
+.glass-card:hover {
+  border-color: rgba(0, 255, 136, 0.25) !important; /* crisp neon green border hover */
+  box-shadow: 
+    0 15px 35px rgba(0, 0, 0, 0.35), 
+    0 0 20px rgba(0, 255, 136, 0.04), 
+    inset 0 1px 0 rgba(255, 255, 255, 0.03) !important;
+}
+
+/* 4. Sharp Neon Green Highlights */
+.text-\[\#00FF88\],
+.text-primary {
+  color: #00FF88 !important; /* vibrant neon green highlight */
+}
+
+/* Button & Badge styles */
+.bg-\[\#00FF88\],
+.bg-primary {
+  background-color: #00FF88 !important;
+  color: #060913 !important;
+  box-shadow: 0 4px 15px rgba(0, 255, 136, 0.2) !important;
+}
+.bg-\[\#00FF88\] span,
+.bg-\[\#00FF88\] svg,
+.bg-primary span,
+.bg-primary svg {
+  color: #060913 !important;
+  stroke: #060913 !important;
+}
+.bg-\[\#00FF88\]:hover,
+.bg-primary:hover {
+  background-color: #2bffa2 !important;
+  box-shadow: 0 6px 20px rgba(0, 255, 136, 0.35) !important;
+}
+
+/* 5. Inputs & Forms */
+input, textarea, select {
+  background-color: #0b0f19 !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+}
+input:focus, textarea:focus, select:focus {
+  border-color: #00FF88 !important;
+  box-shadow: 0 0 10px rgba(0, 255, 136, 0.15) !important;
+  background-color: #0f1422 !important;
+}
+
+/* Social icons / borders */
+.border-zinc-800,
+.border-zinc-700,
+.border-slate-800 {
+  border-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* Border dividers */
+.border-t-\[rgba\(255\,255\,255\,0\.04\)\] {
+  border-top-color: rgba(255, 255, 255, 0.05) !important;
+}
+.bg-gradient-to-r.from-transparent.via-\[\#00FF88\]\/30.to-transparent {
+  background-image: linear-gradient(to right, transparent, rgba(0, 255, 136, 0.15), transparent) !important;
+}
+
+/* Footer Section */
+footer {
+  border-top-color: rgba(255, 255, 255, 0.06) !important;
+  background-color: #060913 !important;
+}
+
+/* Custom Cursor tracker */
+.custom-cursor-dot, .custom-cursor-ring {
+  background-color: rgba(0, 255, 136, 0.35) !important;
+  border-color: rgba(0, 255, 136, 0.8) !important;
+}
+
+/* 6. Clean Overlays (Remove scanner sweep animations from text cards) */
+.hud-scan, 
+.hud-scan-slow, 
+.hud-scan-thick {
+  display: none !important;
+}
+
+/* 7. Hide scrollbar but keep scroll functionality */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* 8. Styled scrollbar for certificates list */
+.cert-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0,255,136,0.25) transparent;
+}
+.cert-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+.cert-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.cert-scroll::-webkit-scrollbar-thumb {
+  background: rgba(0,255,136,0.25);
+  border-radius: 4px;
+}
+.cert-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(0,255,136,0.45);
 }

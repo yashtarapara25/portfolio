@@ -57,7 +57,34 @@ export function useProjects() {
         );
         if (cancelled) return;
         if (err) throw err;
-        setProjects(data || []);
+        if (data && data.length > 0) {
+          const processed = data.map(p => {
+            if (p.title === "Cardiovascular Disease Prediction") {
+              return { ...p, image_url: "/cardio.png" };
+            }
+            return p;
+          });
+          setProjects(processed);
+        } else {
+          setProjects(
+            staticProjects.map((p, i) => ({
+              id: p.id,
+              title: p.title,
+              slug: p.slug,
+              short_desc: p.shortDesc,
+              tech: p.tech as string[],
+              image_url: p.image,
+              demo_url: p.demoUrl ?? null,
+              repo_url: p.repoUrl ?? null,
+              featured: p.featured ?? false,
+              sort_order: i,
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+              content_mdx: null,
+              images: null,
+            })) as Project[]
+          );
+        }
       } catch {
         if (cancelled) return;
         // Supabase unreachable — map static data to the DB shape
@@ -112,7 +139,20 @@ export function useSkills() {
         );
         if (cancelled) return;
         if (err) throw err;
-        setSkills(data || []);
+        if (data && data.length > 0) {
+          setSkills(data);
+        } else {
+          setSkills(
+            staticSkills.map((s, i) => ({
+              id: String(i + 1),
+              name: s.name,
+              level: s.level,
+              category: s.category,
+              sort_order: i,
+              created_at: new Date().toISOString(),
+            })) as Skill[]
+          );
+        }
       } catch {
         if (cancelled) return;
         setSkills(
@@ -154,7 +194,21 @@ export function useEducation() {
         );
         if (cancelled) return;
         if (err) throw err;
-        setEducation(data || []);
+        if (data && data.length > 0) {
+          setEducation(data);
+        } else {
+          setEducation(
+            staticEducation.map((e, i) => ({
+              id: String(i + 1),
+              institution: e.institution,
+              degree: e.degree,
+              summary: e.summary,
+              year: e.year,
+              sort_order: i,
+              created_at: new Date().toISOString(),
+            })) as Education[]
+          );
+        }
       } catch {
         if (cancelled) return;
         setEducation(

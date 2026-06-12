@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#080a16" />
     <title>Tarapara Yash | AI &amp; Data Science Portfolio</title>
     <meta name="description" content="Tarapara Yash — AI &amp; Data Science Developer. Building intelligent applications using Machine Learning and Web Technologies." />
     <meta name="author" content="Tarapara Yash" />
@@ -15,6 +16,22 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@TaraparaYash" />
     <meta name="twitter:image" content="/og-image.png" />
+
+    <!--
+      Font loading strategy:
+      1. preconnect  → opens the TCP/TLS handshake before the browser needs fonts
+      2. <link rel="stylesheet"> with display=swap → non-blocking, no FOUT
+      3. Only 4 families (removed Rajdhani + Oxanium — barely used)
+         Orbitron: headings  |  Space Grotesk: body  |  JetBrains Mono: code labels  |  Inter: fallback
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Single non-blocking request for all required font families -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500;600;700&family=Orbitron:wght@400;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    />
   </head>
 
   <body>

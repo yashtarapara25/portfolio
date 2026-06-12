@@ -129,19 +129,25 @@ export default function AdminSkills() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800">
-      <nav className="bg-gray-900 border-b border-gray-700 p-4">
+    <div className="min-h-screen bg-[#050816] relative overflow-hidden text-zinc-300 font-sans pb-12">
+      {/* Background decoration */}
+      <div className="absolute -left-12 -top-12 w-48 h-48 rounded-full bg-[#00FF88]/5 blur-3xl pointer-events-none" />
+      <div className="absolute inset-0 bg-grid-pattern opacity-5 pointer-events-none" />
+
+      <nav className="bg-[#050816]/90 backdrop-blur-xl border-b border-[#00FF88]/15 p-4 relative z-20">
         <div className="container max-w-6xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-4">
             <Button
               onClick={() => navigate("/admin/dashboard")}
-              variant="ghost"
+              className="bg-transparent border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700 hover:bg-white/5 font-mono text-xs uppercase"
               size="sm"
             >
-              <ArrowLeft size={16} className="mr-2" />
+              <ArrowLeft size={14} className="mr-1.5" />
               Back
             </Button>
-            <h1 className="text-2xl font-bold text-cyan-400">Manage Skills</h1>
+            <h1 className="text-xl font-bold font-space text-white tracking-wide">
+              Manage <span className="text-[#00FF88] text-gradient">Skills</span>
+            </h1>
           </div>
           <Button
             onClick={() => {
@@ -153,25 +159,32 @@ export default function AdminSkills() {
               setEditingId(null);
               setShowForm(true);
             }}
-            className="gap-2 bg-cyan-600 hover:bg-cyan-700"
+            className="gap-1.5 bg-[#00FF88]/10 border border-[#00FF88]/30 hover:border-[#00FF88] text-[#00FF88] hover:bg-[#00FF88]/20 transition-all font-mono text-xs uppercase font-bold tracking-wider"
           >
-            <Plus size={16} />
+            <Plus size={14} />
             Add Skill
           </Button>
         </div>
       </nav>
 
-      <div className="container max-w-6xl mx-auto py-8 px-4">
+      <div className="container max-w-6xl mx-auto py-8 px-4 relative z-10">
         {showForm && (
-          <div className="bg-gray-800 rounded-lg border border-gray-700 p-6 mb-8">
-            <h2 className="text-2xl font-bold text-white mb-4">
-              {editingId ? "Edit Skill" : "New Skill"}
+          <div className="bg-[#0b1120]/45 backdrop-blur-xl border border-[rgba(255,255,255,0.07)] rounded-2xl p-6 mb-8 relative overflow-hidden">
+            {/* Corner Brackets */}
+            <div className="absolute top-3 left-3 w-3 h-3 border-t-2 border-l-2 border-[#00FF88]/20 pointer-events-none" />
+            <div className="absolute top-3 right-3 w-3 h-3 border-t-2 border-r-2 border-[#00FF88]/20 pointer-events-none" />
+            <div className="absolute bottom-3 left-3 w-3 h-3 border-b-2 border-l-2 border-[#00FF88]/20 pointer-events-none" />
+            <div className="absolute bottom-3 right-3 w-3 h-3 border-b-2 border-r-2 border-[#00FF88]/20 pointer-events-none" />
+            
+            <h2 className="text-xl font-bold font-space text-white mb-6 flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#00FF88]" />
+              {editingId ? "Modify Skill Entry" : "Register New Skill Module"}
             </h2>
 
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className="block text-xs font-mono uppercase tracking-wider text-zinc-400 mb-2">
                     Name
                   </label>
                   <Input
@@ -179,32 +192,34 @@ export default function AdminSkills() {
                     onChange={(e) =>
                       setFormData({ ...formData, name: e.target.value })
                     }
-                    className="bg-gray-700 border-gray-600"
+                    className="bg-[#050816]/50 border-[rgba(255,255,255,0.1)] focus:border-[#00FF88]/40 focus:ring-1 focus:ring-[#00FF88]/20 text-zinc-300 font-mono text-sm"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Level ({formData.level}/100)
+                  <label className="block text-xs font-mono uppercase tracking-wider text-zinc-400 mb-2">
+                    Level ({formData.level}%)
                   </label>
-                  <Input
-                    type="range"
-                    min="1"
-                    max="100"
-                    value={formData.level}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        level: parseInt(e.target.value),
-                      })
-                    }
-                    className="bg-gray-700 border-gray-600"
-                  />
+                  <div className="flex items-center gap-3 py-1">
+                    <Input
+                      type="range"
+                      min="1"
+                      max="100"
+                      value={formData.level}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          level: parseInt(e.target.value),
+                        })
+                      }
+                      className="flex-1 accent-[#00FF88] h-1.5 bg-[#050816]/80 rounded-lg cursor-pointer"
+                    />
+                  </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className="block text-xs font-mono uppercase tracking-wider text-zinc-400 mb-2">
                     Category
                   </label>
                   <select
@@ -215,10 +230,10 @@ export default function AdminSkills() {
                         category: e.target.value as any,
                       })
                     }
-                    className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white"
+                    className="w-full bg-[#050816]/50 border border-[rgba(255,255,255,0.1)] rounded-lg px-3 py-2 text-zinc-300 font-mono text-sm focus:border-[#00FF88]/40 focus:ring-1 focus:ring-[#00FF88]/20 focus:outline-none"
                   >
                     {CATEGORIES.map((cat) => (
-                      <option key={cat} value={cat}>
+                      <option key={cat} value={cat} className="bg-[#0b1120] text-zinc-300">
                         {cat.charAt(0).toUpperCase() + cat.slice(1)}
                       </option>
                     ))}
@@ -226,13 +241,13 @@ export default function AdminSkills() {
                 </div>
               </div>
 
-              <div className="flex gap-2">
+              <div className="flex gap-3 pt-4">
                 <Button
                   type="submit"
                   disabled={submitting}
-                  className="bg-cyan-600 hover:bg-cyan-700"
+                  className="bg-[#00FF88]/10 border border-[#00FF88]/30 hover:border-[#00FF88] text-[#00FF88] hover:bg-[#00FF88]/20 transition-all font-mono text-xs uppercase font-bold tracking-wider"
                 >
-                  {submitting ? "Saving..." : "Save Skill"}
+                  {submitting ? "Processing..." : "Commit Entry"}
                 </Button>
                 <Button
                   type="button"
@@ -240,7 +255,7 @@ export default function AdminSkills() {
                     setShowForm(false);
                     setEditingId(null);
                   }}
-                  variant="outline"
+                  className="bg-transparent border border-zinc-800 text-zinc-500 hover:text-zinc-300 hover:border-zinc-700 hover:bg-white/5 font-mono text-xs uppercase"
                 >
                   Cancel
                 </Button>
@@ -249,52 +264,59 @@ export default function AdminSkills() {
           </div>
         )}
 
-        <div className="space-y-8">
+        <div className="space-y-10">
           {CATEGORIES.map((category) => (
-            <div key={category}>
-              <h2 className="text-2xl font-bold text-white mb-4 capitalize">
-                {category === "ai-ml" ? "AI/ML" : category}s ({" "}
-                {groupedSkills[category].length})
-              </h2>
+            <div key={category} className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-1.5 h-1.5 rounded-full bg-[#00FF88]" />
+                <h2 className="text-xl font-bold font-space text-white capitalize tracking-wide">
+                  {category === "ai-ml" ? "AI / ML Focus" : `${category} Registry`} ({groupedSkills[category].length})
+                </h2>
+              </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {groupedSkills[category].map((skill) => (
                   <div
                     key={skill.id}
-                    className="bg-gray-800 rounded-lg border border-gray-700 p-4"
+                    className="bg-[#0b1120]/45 backdrop-blur-xl border border-[rgba(255,255,255,0.06)] hover:border-[#00FF88]/20 rounded-xl p-4 transition-all duration-300 relative overflow-hidden"
                   >
+                    {/* Accent Brackets */}
+                    <div className="absolute top-2 left-2 w-2 h-2 border-t border-l border-[#00FF88]/20 pointer-events-none" />
+                    <div className="absolute top-2 right-2 w-2 h-2 border-t border-r border-[#00FF88]/20 pointer-events-none" />
+                    <div className="absolute bottom-2 left-2 w-2 h-2 border-b border-l border-[#00FF88]/20 pointer-events-none" />
+                    <div className="absolute bottom-2 right-2 w-2 h-2 border-b border-r border-[#00FF88]/20 pointer-events-none" />
+
                     <div className="flex justify-between items-start mb-3">
                       <div>
-                        <h3 className="text-lg font-bold text-white">
+                        <h3 className="text-base font-bold text-white font-space">
                           {skill.name}
                         </h3>
-                        <p className="text-sm text-gray-400">
-                          Level: {skill.level}/100
+                        <p className="text-xs font-mono text-zinc-500">
+                          NODE_LEVEL: {skill.level}%
                         </p>
                       </div>
 
                       <div className="flex gap-2">
                         <Button
                           onClick={() => handleEdit(skill)}
-                          variant="outline"
+                          className="bg-transparent border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700 hover:bg-white/5 p-2 h-8 w-8"
                           size="sm"
                         >
-                          <Edit size={16} />
+                          <Edit size={13} />
                         </Button>
                         <Button
                           onClick={() => handleDelete(skill.id)}
-                          variant="outline"
+                          className="bg-transparent border border-red-500/20 text-red-400 hover:text-white hover:border-red-500 hover:bg-red-500/10 p-2 h-8 w-8"
                           size="sm"
-                          className="text-red-400 hover:text-red-400"
                         >
-                          <Delete size={16} />
+                          <Delete size={13} />
                         </Button>
                       </div>
                     </div>
 
-                    <div className="w-full bg-gray-700 rounded-full h-2">
+                    <div className="w-full bg-[#050816]/80 rounded-full h-1.5 overflow-hidden border border-white/[0.03]">
                       <div
-                        className="bg-cyan-600 h-2 rounded-full"
+                        className="bg-gradient-to-r from-[#00FF88] to-[#00FF88]/60 h-1.5 rounded-full shadow-[0_0_8px_#00FF88]"
                         style={{ width: `${skill.level}%` }}
                       />
                     </div>
