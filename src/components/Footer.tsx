@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { useSiteSettings } from "@/hooks/use-portfolio-data";
 import { about } from "@/lib/data";
 import { Github, Linkedin, Code, Zap, Keyboard } from "lucide-react";
+import profileImg from "@/assets/profile-portrait.jpg";
 
 export default function Footer() {
   const { settings } = useSiteSettings();
@@ -29,11 +30,11 @@ export default function Footer() {
           >
             {/* Logo */}
             <div className="flex items-center gap-2 mb-0.5">
-              <div className="w-6 h-6 rounded bg-[#00FF88]/10 border border-[#00FF88]/30 flex items-center justify-center text-[#00FF88] shadow-[0_0_10px_rgba(0,255,136,0.05)]">
-                <Code size={11} className="stroke-[2.5]" />
+              <div className="relative w-6 h-6 rounded-full overflow-hidden border border-[#00FF88]/30 shadow-[0_0_8px_rgba(0,255,136,0.1)] flex-shrink-0">
+                <img src={profileImg} alt="Tarapara Yash" className="w-full h-full object-cover object-top" />
               </div>
               <span className="font-space text-sm font-bold text-white tracking-tight">
-                {settings.site_title || "Tarapara Yash Portfolio"}
+                {settings.site_title?.replace("Yash Tarapara", "Tarapara Yash") || "Tarapara Yash Portfolio"}
               </span>
             </div>
 
