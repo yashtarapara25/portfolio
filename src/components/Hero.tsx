@@ -325,6 +325,8 @@ export default function Hero() {
                 src={profileImg}
                 alt="Tarapara Yash"
                 className="w-[88%] h-[88%] object-cover rounded-xl border border-white/5 transition-transform duration-700 group-hover:scale-[1.03]"
+                fetchpriority="high"
+                decoding="async"
               />
 
               {/* Minimal coordinate HUD element */}

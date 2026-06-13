@@ -142,6 +142,8 @@ export default function About() {
                   src={profileImg} 
                   alt={about.name}
                   className="w-full h-full object-cover grayscale brightness-90 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-700 scale-105 group-hover:scale-100"
+                  loading="lazy"
+                  decoding="async"
                 />
 
                 {/* Laser scan line overlay */}

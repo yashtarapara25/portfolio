@@ -274,13 +274,16 @@ export default function Contact() {
                         {/* Row: Name + Email */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                           <div className="space-y-1.5">
-                            <label className="font-mono text-[9px] text-zinc-500 uppercase tracking-widest flex items-center gap-1.5">
+                            <label htmlFor="sender-name" className="font-mono text-[9px] text-zinc-500 uppercase tracking-widest flex items-center gap-1.5">
                               <span className="text-[#00FF88]">//</span> Sender_Name
                             </label>
                             <input
+                              id="sender-name"
+                              name="name"
                               type="text"
                               placeholder="Your full name"
                               required
+                              aria-required="true"
                               maxLength={100}
                               value={form.name}
                               onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -290,13 +293,16 @@ export default function Contact() {
                             />
                           </div>
                           <div className="space-y-1.5">
-                            <label className="font-mono text-[9px] text-zinc-500 uppercase tracking-widest flex items-center gap-1.5">
+                            <label htmlFor="reply-email" className="font-mono text-[9px] text-zinc-500 uppercase tracking-widest flex items-center gap-1.5">
                               <span className="text-[#00FF88]">//</span> Reply_Address
                             </label>
                             <input
+                              id="reply-email"
+                              name="email"
                               type="email"
                               placeholder="your@email.com"
                               required
+                              aria-required="true"
                               maxLength={255}
                               value={form.email}
                               onChange={(e) => setForm({ ...form, email: e.target.value })}
@@ -310,7 +316,7 @@ export default function Contact() {
                         {/* Message */}
                         <div className="space-y-1.5">
                           <div className="flex items-center justify-between">
-                            <label className="font-mono text-[9px] text-zinc-500 uppercase tracking-widest flex items-center gap-1.5">
+                            <label htmlFor="message-payload" className="font-mono text-[9px] text-zinc-500 uppercase tracking-widest flex items-center gap-1.5">
                               <span className="text-[#00FF88]">//</span> Message_Payload
                             </label>
                             <span className="font-mono text-[9px] text-zinc-600">
@@ -318,9 +324,12 @@ export default function Contact() {
                             </span>
                           </div>
                           <textarea
+                            id="message-payload"
+                            name="message"
                             placeholder="Describe your project, idea, or opportunity..."
                             rows={7}
                             required
+                            aria-required="true"
                             maxLength={1000}
                             value={form.message}
                             onChange={(e) => setForm({ ...form, message: e.target.value })}
