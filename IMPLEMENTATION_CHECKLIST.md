@@ -46,13 +46,13 @@
 
 ### Frontend Component Updates
 
-- [ ] Update `ProjectsGrid.tsx` to use `useProjects()`
-- [ ] Update `SkillsViz.tsx` to use `useSkills()`
-- [ ] Update `Timeline.tsx` to use `useEducation()`
-- [ ] Update `Header.tsx` to use `useSiteSettings()`
-- [ ] Update `Contact.tsx` to use `useSiteSettings()`
-- [ ] Update `Footer.tsx` to use `useSiteSettings()`
-- [ ] Remove static data import from `lib/data.ts` (after migration)
+- [x] Update `ProjectsGrid.tsx` to use `useProjects()`
+- [x] Update `SkillsViz.tsx` to use `useSkills()`
+- [x] Update `Timeline.tsx` to use `useEducation()`
+- [x] Update `Header.tsx` to use `useSiteSettings()`
+- [x] Update `Contact.tsx` to use `useSiteSettings()`
+- [x] Update `Footer.tsx` to use `useSiteSettings()`
+- [x] Keep static data import from `lib/data.ts` as a fallback strategy for connection timeouts
 
 ### Admin Panel Enhancements
 

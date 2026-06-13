@@ -136,34 +136,21 @@ export default function Hero() {
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#080c18]/60 to-[#080c18]" />
       </div>
 
-      <motion.div
-        variants={staggerContainer}
-        initial="hidden"
-        animate="visible"
-        className="relative z-10 container max-w-6xl mx-auto px-6 pt-20 pb-20"
-      >
+      <div className="relative z-10 container max-w-6xl mx-auto px-6 pt-20 pb-20">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
           {/* ── LEFT: Text Content ── */}
-          <motion.div className="md:col-span-7 flex flex-col justify-center">
+          <div className="md:col-span-7 flex flex-col justify-center">
             {/* Hello badge */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#00FF88]/20 bg-[#00FF88]/5 text-[10px] font-mono tracking-widest text-white mb-6 select-none w-fit hover:border-[#00FF88]/40 hover:bg-[#00FF88]/10 transition-colors duration-300"
-            >
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#00FF88]/20 bg-[#00FF88]/5 text-[10px] font-mono tracking-widest text-white mb-6 select-none w-fit hover:border-[#00FF88]/40 hover:bg-[#00FF88]/10 transition-colors duration-300">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00FF88] opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-[#00FF88]"></span>
               </span>
               HELLO, I'M
-            </motion.div>
+            </div>
 
             {/* Name */}
-            <motion.h1
-              variants={fadeUp}
-              className="text-5xl sm:text-7xl lg:text-[86px] font-black font-space tracking-tight text-white mb-2 leading-[0.95] select-none flex flex-wrap gap-x-4"
-            >
+            <h1 className="text-5xl sm:text-7xl lg:text-[86px] font-black font-space tracking-tight text-white mb-2 leading-[0.95] select-none flex flex-wrap gap-x-4">
               <span>Tarapara</span>
               <motion.span
                 className="bg-clip-text text-transparent bg-gradient-to-r from-[#00FF88] via-[#22d3ee] to-[#00FF88] bg-[length:200%_auto] select-none filter drop-shadow-[0_0_20px_rgba(0,255,136,0.35)]"
@@ -178,15 +165,10 @@ export default function Hero() {
               >
                 Yash
               </motion.span>
-            </motion.h1>
+            </h1>
 
             {/* Roles — AnimatePresence word-swap */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 0.6 }}
-              className="flex items-center gap-2 text-2xl md:text-3xl font-bold mt-2 min-h-[2.5rem] overflow-hidden text-[#00FF88] font-space"
-            >
+            <div className="flex items-center gap-2 text-2xl md:text-3xl font-bold mt-2 min-h-[2.5rem] overflow-hidden text-[#00FF88] font-space">
               <AnimatePresence mode="wait">
                 <motion.span
                   key={roleIndex}
@@ -199,23 +181,15 @@ export default function Hero() {
                 </motion.span>
               </AnimatePresence>
               <Sparkles size={20} className="text-[#00FF88] animate-pulse flex-shrink-0" />
-            </motion.div>
+            </div>
 
             {/* Tagline */}
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.6, duration: 0.8 }}
-              className="text-base md:text-lg text-zinc-400 max-w-xl mt-4 leading-relaxed font-space"
-            >
+            <p className="text-base md:text-lg text-zinc-400 max-w-xl mt-4 leading-relaxed font-space">
               {about.tagline}
-            </motion.p>
+            </p>
 
             {/* CTA Buttons */}
-            <motion.div 
-              variants={fadeUp} 
-              className="flex flex-wrap gap-4 mt-8"
-            >
+            <div className="flex flex-wrap gap-4 mt-8">
               <motion.a
                 href="#contact"
                 whileHover={{ scale: 1.02 }}
@@ -237,13 +211,10 @@ export default function Hero() {
                 <Download size={16} className="text-[#00FF88]" />
                 <span>Download Resume</span>
               </motion.a>
-            </motion.div>
+            </div>
 
             {/* Social Links */}
-            <motion.div 
-              variants={fadeUp} 
-              className="flex items-center gap-3 mt-10"
-            >
+            <div className="flex items-center gap-3 mt-10">
               {[
                 { icon: Github, href: settings.github_url || about.github, label: "GitHub" },
                 { icon: Linkedin, href: settings.linkedin_url || about.linkedin, label: "LinkedIn" },
@@ -269,22 +240,17 @@ export default function Hero() {
                     transition={{ duration: 0.6, ease: "easeOut" }}
                   />
 
-                  {/* High-tech cyberpunk tooltip */}
+                  {/* Cyberpunk tooltip */}
                   <span className="absolute opacity-0 group-hover:opacity-100 translate-y-2 group-hover:-translate-y-7 transition-all duration-300 whitespace-nowrap text-[10px] font-mono font-semibold px-2.5 py-1 rounded bg-[#0B1220]/95 border border-[#00FF88]/30 text-[#00FF88] shadow-[0_0_15px_rgba(0,255,136,0.15)] pointer-events-none left-1/2 -translate-x-1/2 z-20">
                     {label}
                   </span>
                 </motion.a>
               ))}
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
 
           {/* ── RIGHT: Profile Photo Container ── */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.5, duration: 0.8 }}
-            className="md:col-span-5 flex items-center justify-center relative select-none"
-          >
+          <div className="md:col-span-5 flex items-center justify-center relative select-none">
             {/* Orbiting Code Icons behind the profile card */}
             <div className="absolute inset-0 flex items-center justify-center -z-10 pointer-events-none scale-90 sm:scale-100">
               {CODE_ICONS.map((icon, i) => (
@@ -376,9 +342,9 @@ export default function Hero() {
                 <span>AVAILABLE FOR PROJECTS</span>
               </div>
             </motion.div>
-          </motion.div>
+          </div>
         </div>
-      </motion.div>
+      </div>
 
       {/* Scroll indicator */}
       <motion.div
