@@ -220,6 +220,10 @@ export default function ProjectsGrid() {
                     <div className="absolute inset-0 w-full h-full select-none overflow-hidden">
                       {projects.map((item, idx) => {
                         const isActive = idx === selected;
+                        const isNear = Math.abs(idx - selected) <= 1 || 
+                                       (selected === 0 && idx === projects.length - 1) || 
+                                       (selected === projects.length - 1 && idx === 0);
+                        if (!isNear) return null;
                         if (!item.image) return null;
 
                         return (

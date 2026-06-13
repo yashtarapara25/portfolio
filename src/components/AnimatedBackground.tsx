@@ -15,6 +15,10 @@ export default function AnimatedBackground() {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
+    // Completely disable on mobile to prevent scrolling lag and battery drain
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
+    if (isMobile) return;
+
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (prefersReduced) return;
 
@@ -24,7 +28,6 @@ export default function AnimatedBackground() {
     let width = canvas.width = window.innerWidth;
     let height = canvas.height = window.innerHeight;
 
-    const isMobile = window.matchMedia("(max-width: 768px)").matches;
     const nodeCount = isMobile ? 25 : 60;
     const maxDistance3D = isMobile ? 130 : 170;
 
@@ -203,7 +206,7 @@ export default function AnimatedBackground() {
     <div className="fixed inset-0 pointer-events-none z-0 bg-background">
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 w-full h-full"
+        className="absolute inset-0 w-full h-full hidden md:block"
         style={{ opacity: 0.35 }}
         aria-hidden="true"
       />

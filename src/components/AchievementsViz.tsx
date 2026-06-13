@@ -323,6 +323,11 @@ export default function AchievementsViz() {
                     <div className="absolute inset-0 w-full h-full">
                       {achievements.map((item, idx) => {
                         const isActive = idx === selected;
+                        const isNear = Math.abs(idx - selected) <= 1 || 
+                                       (selected === 0 && idx === achievements.length - 1) || 
+                                       (selected === achievements.length - 1 && idx === 0);
+                        if (!isNear) return null;
+
                         const previewImg = item.image_url ? toPreviewImageUrl(item.image_url) : null;
                         if (!previewImg || imageErrors[item.id]) return null;
 
