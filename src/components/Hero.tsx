@@ -7,73 +7,7 @@ import AnimatedBackground from "./AnimatedBackground";
 import { useState, useEffect } from "react";
 import { useSiteSettings } from "@/hooks/use-portfolio-data";
 
-// ─── Orbiting Code-Icon data ────────────────────────────────────────────
-const CODE_ICONS = [
-  { label: "</>", color: "#22d3ee" },
-  { label: "{}", color: "#a855f7" },
-  { label: "⚙", color: "#3b82f6" },
-  { label: "#", color: "#ec4899" },
-  { label: "[]", color: "#10b981" },
-  { label: "=>", color: "#f59e0b" },
-  { label: "⚡", color: "#22d3ee" },
-  { label: "∅", color: "#a855f7" },
-];
-
-/** A single code-icon that orbits around the profile frame */
-function OrbitIcon({
-  label,
-  color,
-  index,
-  total,
-  radius,
-}: {
-  label: string;
-  color: string;
-  index: number;
-  total: number;
-  radius: number;
-}) {
-  const angle = (index / total) * 360;
-  const duration = 12 + (index % 3) * 3; // each icon slightly different speed
-  const delay = -(angle / 360) * duration; // stagger start positions
-
-  return (
-    <motion.div
-      className="absolute top-1/2 left-1/2"
-      style={{ width: 0, height: 0 }}
-      animate={{ rotate: 360 }}
-      transition={{ duration, repeat: Infinity, ease: "linear", delay }}
-    >
-      {/* the icon stays upright while its container rotates */}
-      <motion.div
-        style={{
-          position: "absolute",
-          left: radius,
-          top: 0,
-          transform: "translate(-50%, -50%)",
-        }}
-        animate={{ rotate: -360 }}
-        transition={{ duration, repeat: Infinity, ease: "linear", delay }}
-        whileHover={{ scale: 1.5 }}
-      >
-        <span
-          className="block text-xs font-bold font-mono px-1.5 py-0.5 rounded-md select-none"
-          style={{
-            color,
-            background: `${color}18`,
-            border: `1px solid ${color}50`,
-            boxShadow: `0 0 8px ${color}60`,
-            textShadow: `0 0 6px ${color}`,
-            fontSize: "10px",
-            letterSpacing: "0.05em",
-          }}
-        >
-          {label}
-        </span>
-      </motion.div>
-    </motion.div>
-  );
-}
+// Orbiting icons removed for mobile performance and simplicity
 
 // ─── Resume Download Button ─────────────────────────────────────────────────
 function ResumeButton() {
@@ -251,92 +185,24 @@ export default function Hero() {
 
           {/* ── RIGHT: Profile Photo Container ── */}
           <div className="md:col-span-5 flex items-center justify-center relative select-none">
-            {/* Orbiting Code Icons behind the profile card */}
-            <div className="absolute inset-0 flex items-center justify-center -z-10 pointer-events-none scale-90 sm:scale-100">
-              {CODE_ICONS.map((icon, i) => (
-                <OrbitIcon
-                  key={i}
-                  label={icon.label}
-                  color={icon.color}
-                  index={i}
-                  total={CODE_ICONS.length}
-                  radius={225}
-                />
-              ))}
-            </div>
-
-            {/* Glowing spotlight container with continuous float and hover scale */}
+            {/* Simple and attractive profile image card with no laggy animations */}
             <motion.div
-              animate={{
-                y: [0, -10, 0],
-              }}
-              transition={{
-                duration: 5,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-              whileHover={{ scale: 1.03, y: -14 }}
-              className="relative w-full max-w-[420px] aspect-square rounded-2xl border border-[rgba(255,255,255,0.06)] bg-[#0B1220]/45 backdrop-blur-xl flex items-center justify-center overflow-hidden shadow-2xl group cursor-pointer"
+              whileHover={{ scale: 1.03 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className="relative w-full max-w-[360px] md:max-w-[400px] aspect-square rounded-2xl p-1 bg-gradient-to-br from-[#00FF88]/20 via-transparent to-[#22d3ee]/20 shadow-[0_0_40px_rgba(0,255,136,0.15)] group cursor-pointer"
             >
-              {/* Internal abstract grid */}
-              <div 
-                className="absolute inset-0 opacity-[0.03] grid-pattern pointer-events-none"
-                style={{ backgroundSize: "30px 30px" }}
-              />
-              {/* Radial gradient sheen */}
-              <div 
-                className="absolute inset-0 pointer-events-none"
-                style={{
-                  background: "radial-gradient(circle at 50% 50%, rgba(255,255,255,0.03) 0%, transparent 70%)"
-                }}
-              />
-
-              {/* Vertical Scanner Sweep — Pure Framer Motion GPU-composited overlay */}
-              <motion.div
-                className="absolute left-6 right-6 h-[1.5px] bg-[#00FF88] shadow-[0_0_8px_#00FF88] z-20 pointer-events-none"
-                style={{ top: 0 }}
-                animate={{
-                  y: [24, 348, 24]
-                }}
-                transition={{
-                  duration: 4,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-              />
-
-              {/* High-tech Corner Brackets */}
-              <div className="absolute top-4 left-4 w-4 h-4 border-t-2 border-l-2 border-[#00FF88]/40 pointer-events-none group-hover:border-[#00FF88]/80 transition-colors" />
-              <div className="absolute top-4 right-4 w-4 h-4 border-t-2 border-r-2 border-[#00FF88]/40 pointer-events-none group-hover:border-[#00FF88]/80 transition-colors" />
-              <div className="absolute bottom-4 left-4 w-4 h-4 border-b-2 border-l-2 border-[#00FF88]/40 pointer-events-none group-hover:border-[#00FF88]/80 transition-colors" />
-              <div className="absolute bottom-4 right-4 w-4 h-4 border-b-2 border-r-2 border-[#00FF88]/40 pointer-events-none group-hover:border-[#00FF88]/80 transition-colors" />
-
-              {/* Target & status indicators */}
-              <div className="absolute top-6 left-6 flex items-center gap-1.5 px-2 py-0.5 bg-[#050816]/75 backdrop-blur-md border border-[rgba(255,255,255,0.06)] rounded text-[9px] font-mono tracking-widest text-[#00FF88] uppercase select-none pointer-events-none">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#00FF88] animate-pulse" />
-                <span>SYS: ACTIVE</span>
-              </div>
-              <div className="absolute top-6 right-6 flex items-center px-2 py-0.5 bg-[#050816]/75 backdrop-blur-md border border-[rgba(255,255,255,0.06)] rounded text-[9px] font-mono tracking-widest text-zinc-400 uppercase select-none pointer-events-none">
-                <span>SRC: YASH.IMG</span>
+              <div className="w-full h-full rounded-xl overflow-hidden bg-[#0B1220] relative">
+                <img
+                  src={profileImg}
+                  alt="Tarapara Yash"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  fetchpriority="high"
+                  decoding="async"
+                />
               </div>
 
-              {/* Profile Photo */}
-              <img
-                src={profileImg}
-                alt="Tarapara Yash"
-                className="w-[88%] h-[88%] object-cover rounded-xl border border-white/5 transition-transform duration-700 group-hover:scale-[1.03]"
-                fetchpriority="high"
-                decoding="async"
-              />
-
-              {/* Minimal coordinate HUD element */}
-              <div className="absolute bottom-6 left-6 text-[9px] font-mono text-zinc-500 flex gap-4 uppercase tracking-widest pointer-events-none">
-                <span>SCAN_MODE: ON</span>
-                <span>CONFIRM_ID: 8080</span>
-              </div>
-
-              {/* Interactive availability badge */}
-              <div className="absolute bottom-6 right-6 flex items-center gap-1.5 px-2.5 py-1 bg-[#050816]/85 backdrop-blur-md border border-[#00FF88]/30 rounded-md text-[9px] font-mono tracking-widest text-[#00FF88] uppercase select-none pointer-events-none group-hover:border-[#00FF88] group-hover:shadow-[0_0_15px_rgba(0,255,136,0.15)] transition-all duration-300">
+              {/* Static availability badge at the bottom right */}
+              <div className="absolute -bottom-3 -right-3 flex items-center gap-1.5 px-3 py-1.5 bg-[#050816] border border-[#00FF88]/30 rounded-lg text-[10px] font-mono tracking-widest text-[#00FF88] uppercase select-none pointer-events-none shadow-lg">
                 <span className="relative flex h-1.5 w-1.5">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00FF88] opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#00FF88]"></span>
